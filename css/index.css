@@ -1,7 +1,18 @@
-body {
-    font-family: monospace;
-    font-size: 32px;
-    background-color: black;
-    color: greenyellow;
-    text-align: center;
-  }
+body, html{
+  margin : 0px;
+  font-family: Arial, Helvetica, sans-serif;
+  height: 100%;
+}
+
+
+.network_div{
+  display: flex;
+  width: 200px;
+  height: 100%;
+  padding: 10px;
+  border-right: 1px solid gray;
+}
+
+.input_block{
+  margin-bottom: 10px;
+}

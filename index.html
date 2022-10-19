@@ -2,18 +2,40 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>Clock App</title>     
-    
-  </head>
-  <body>
+    <title>Voilier</title> 
+    <link rel="stylesheet" href="css/index.css"> 
+
+    <script src="js/main.js"></script>
     <script src="js/main_connection.js"></script>
     <script src="node_modules/ws/index.js"></script>
 
-    <form id = "form_test">
-      <label for="fname">First name:</label><br>
-      <input type="text" id="fname" name="fname" value="John"><br>
-      <input type="submit" value="Submit">
-    </form> 
-    
+  </head>
+  <body>
+
+
+    <div class = "network_div">
+
+      <div class = "server_div">
+
+        <div class = "input_block">
+          <label>Server</label>
+          <input type="text" id="server_name" name="server_name"/>
+        </div>
+        
+        <div class = "input_block">
+          <label> Your id </label>
+          <input type="text" id = "client_id" value="pc_" required/>
+        </div>
+        
+        <div class = "input_block">
+          <label> Remote device id</label>
+          <input type ="text" id = "remote_device_id" value="rasp_" required/>
+        </div>
+
+        <button type="button" id = "connect_button">Connect</button>
+
+      </div>
+
+    </div>
 
   </body>

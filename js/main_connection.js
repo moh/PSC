@@ -1,35 +1,35 @@
-const socket = new WebSocket("ws://localhost:3000");
-var client_id = "";
 
+/* connect to server 
+ this function send basic information to server, 
+ and bind the answer to the action function
+*/
+ function connect_to_server(host, client_id, remote_device_id, action){
+  socket = new WebSocketGlobal(host);
 
-socket.addEventListener("open", () => {
-  // send a message to the server
-  socket.send(JSON.stringify({
-    type: "hello",
-  }));
-});
-
-// receive a message from the server
-socket.addEventListener("message", ({ data }) => {
-  const packet = JSON.parse(data);
-  if (("client_id" in packet) && (client_id == "")){
-    client_id = packet["client_id"];
-    console.log(client_id);
-  }
-  console.log(packet);
-});
-
-document.addEventListener("DOMContentLoaded", function(event) { 
-  document.getElementById("form_test").addEventListener('submit', function(e){
-    e.preventDefault();
-    const name = document.getElementById("fname").value;
+  // send information to the server when connection is opened
+  socket.addEventListener("open", () => {
     socket.send(JSON.stringify({
-      type : "data",
+      type: "connect",
       client_id : client_id,
-      content : name
+      remote_device_id : remote_device_id
     }));
-    return false;
-  });  
-});
+  });
 
+  // receive a message from the server
+  socket.addEventListener("message", ({ data }) => {
+    action(data);
+  });
 
+  return socket;
+}
+
+/*
+  send message of type command to server 
+*/
+
+function send_to_server(socket, data){
+  socket.send(JSON.stringify({
+    type : "command",
+    command : data
+  }));
+}
