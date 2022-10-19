@@ -7,10 +7,16 @@ body, html{
 
 .network_div{
   display: flex;
+  flex-direction: column;
   width: 200px;
   height: 100%;
   padding: 10px;
   border-right: 1px solid gray;
+}
+
+.network_div #connection_state{
+  margin-bottom: 20px;
+  padding: 10px;
 }
 
 .input_block{

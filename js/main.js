@@ -20,7 +20,22 @@ function connect_server(){
 
 // process answer from the server 
 function process_server_answer(data){
+    data = JSON.parse(data);
     console.log(data);
+    if (data["type"] == "connect"){
+        change_connection_state(data["answer"] == "accepted");
+    }
+}
+
+
+
+function change_connection_state(state){
+    if (state){
+        console.log("here");
+        document.getElementById("connection_state").innerHTML = "Connected to Server";
+    } else{
+        document.getElementById("connection_state").innerHTML = "Not connected to server";
+    }
 }
 
 

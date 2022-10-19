@@ -14,26 +14,27 @@
 
 
     <div class = "network_div">
+      <div id="connection_state">Not Connected to Server</div>
 
       <div class = "server_div">
+        <form onsubmit="event.preventDefault();">
+          <div class = "input_block">
+            <label>Server</label>
+            <input type="text" id="server_name" name="server_name" value="ws://localhost:3000" required/>
+          </div>
+          
+          <div class = "input_block">
+            <label> Your id </label>
+            <input type="text" id = "client_id" value="pc_" required/>
+          </div>
+          
+          <div class = "input_block">
+            <label> Remote device id</label>
+            <input type ="text" id = "remote_device_id" value="rasp_" required/>
+          </div>
 
-        <div class = "input_block">
-          <label>Server</label>
-          <input type="text" id="server_name" name="server_name"/>
-        </div>
-        
-        <div class = "input_block">
-          <label> Your id </label>
-          <input type="text" id = "client_id" value="pc_" required/>
-        </div>
-        
-        <div class = "input_block">
-          <label> Remote device id</label>
-          <input type ="text" id = "remote_device_id" value="rasp_" required/>
-        </div>
-
-        <button type="button" id = "connect_button">Connect</button>
-
+          <button type="submit" id = "connect_button">Connect</button>
+        </form>
       </div>
 
     </div>
