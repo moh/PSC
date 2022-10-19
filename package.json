@@ -1,0 +1,23 @@
+{
+  "name": "gui",
+  "version": "1.0.0",
+  "description": "Graphical user inteface to command the ship",
+  "main": "index.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/moh/PSC.git"
+  },
+  "author": "SAID",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/moh/PSC/issues"
+  },
+  "homepage": "https://github.com/moh/PSC#readme",
+  "dependencies": {
+    "socket.io": "^4.5.2"
+  }
+}
