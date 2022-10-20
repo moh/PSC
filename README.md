@@ -28,6 +28,7 @@ Server address : ws://localhost:3000
   * Prevent connecting while connected
   * Deal with exceptions 
   * Prevent trying to connect while fields are empty 
+  * Deal when server is down, or disconnect 
 * GUI : [Priority]
   * Define the design 
 * Server : 
