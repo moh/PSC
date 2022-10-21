@@ -18,7 +18,7 @@ Server address : ws://localhost:3000
  * Client to server : { type: 'connect', client_id: '...', remote_device_id: '...' }
  * Server to client : accept or reject connection
    * { "type": "connect", "answer": "accepted" }
-   * { "type": "connect", "answer": "rejected" }
+   * { "type": "connect", "answer": "rejected", "message": A }, where A in {"Error in id"}
 * Command from client to remote_device : 
  * 
 
