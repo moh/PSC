@@ -4,11 +4,21 @@ const WebSocketGlobal = WebSocket;
 
 window.addEventListener('load', main);
 
+// true if client is connected to server
 var connected = false;
+// the socket that result from the connection
 var socket;
 
 
-// connect to the server 
+/**
+ * It is called when button "connect" is clicked
+ * This function verify that the network fields (server, Your id, remote device id) are not empty,
+ * then connect to the server and send those informations,
+ * we pass the required functions to connect_to_server,
+ * process_server_answer : function called when client receives answer from server
+ * server_connection_closed : function called when connection is closed with server
+ * server_connection_error : function called when error is raised in connecting to server
+ *  */ 
 function connect_server(){
     if(!check_network_forum_field()){
         show_network_error("Fields are empty");
@@ -25,7 +35,12 @@ function connect_server(){
 }
 
 
-// process answer from the server 
+/**
+ * Process the answer received from server, 
+ * and call the function depending on the type of the answer
+ * possible type : connect, command
+ * @param {*} data : data received from the server 
+ */
 function process_server_answer(data){
     data = JSON.parse(data);
     console.log(data);
@@ -39,8 +54,34 @@ function process_server_answer(data){
     }
 }
 
+/**
+ * This function is called when the connection with the server is closed
+ * if the client was already connected then the function change the state of connection,
+ * In this case, connection is interrupted, the function show the error
+ */
+ function server_connection_closed(){
+    if (connected){
+        change_connection_state(false);
+        show_network_error("Connection interrupted");
+    }
+}
+
+/**
+ * This function is called when an error occured on socket connection
+ * @param {*} error : error received from socket
+ */ 
+function server_connection_error(error){
+    show_network_error("Can't connect to server");
+}
+
 
 // change the connection status depending on server
+/**
+ * Change fields related to connection when there is a connection or not.
+ * if client is connected, (state = true), then hide error part and show "connected to server"
+ * if client is not connected, (state = false), sow "Not connected to server"
+ * @param {*} state boolean that indicates if client is connected to server or not
+ */
 function change_connection_state(state){
     if (state){
         connected = true;
@@ -55,21 +96,10 @@ function change_connection_state(state){
 }
 
 
-// function to be used when the connection with the server is closed
-function server_connection_closed(){
-    if (!connected){
-        return 
-    }
-    change_connection_state(false);
-    show_network_error("Connection interrupted");
-}
-
-// function server_connection_error 
-function server_connection_error(error){
-    show_network_error("Can't connect to server");
-}
-
-// check if form fields are not empty
+/**
+ * Check if some information are missing from network forum field
+ * @returns boolean indicate if forum_field is empty or note
+ */
 function check_network_forum_field(){
     l = document.querySelectorAll(".input_block input");
     for(var i = 0; i < l.length; i++){
@@ -80,12 +110,18 @@ function check_network_forum_field(){
     return true;
 }
 
-// Connection error fields
+/**
+ * This function show the error description "msg" in the error field
+ * @param {*} msg : string that describe the error 
+ */
 function show_network_error(msg){
     document.getElementById("connection_error").innerHTML = msg;
     document.getElementById("connection_error").style.display = "block";
 }
 
+/**
+ * This function hide the error field
+ */
 function hide_network_error(){
     document.getElementById("connection_error").innerHTML = "";
     document.getElementById("connection_error").style.display = "none";

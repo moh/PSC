@@ -12,7 +12,8 @@
     socket.send(JSON.stringify({
       type: "connect",
       client_id : client_id,
-      remote_device_id : remote_device_id
+      remote_device_id : remote_device_id,
+      client_type : "PC"
     }));
   });
 

@@ -1,1 +1,0 @@
-const host = "ws://localhost:3000";
