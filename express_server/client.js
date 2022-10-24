@@ -9,24 +9,12 @@ const socket = new WebSocket("ws://localhost:3000");
 socket.addEventListener("open", () => {
   // send a message to the server
   socket.send(JSON.stringify({
-    type: "hello from client",
-    content: [ 3, "4" ]
+    type: "connect",
+    client_id : "PC_1",
+    remote_device_id : "ras_1"
   }));
 
-  while(true){
-    const rl = readline.createInterface({
-      input: process.stdin,
-      output: process.stdout,
-    });
 
-    rl.question("Message : ", function (answer){
-      socket.send(JSON.stringify({
-        content: answer
-      }));
-
-      console.log(answer);
-    });
-  }
 
 });
 

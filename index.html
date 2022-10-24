@@ -14,7 +14,7 @@
 
 
     <div class = "network_div">
-      <div id="connection_state">Not Connected to Server</div>
+      <div id="connection_state">Not connected to Server</div>
 
       <div class = "server_div">
         <form onsubmit="event.preventDefault();">
@@ -35,6 +35,60 @@
 
           <button type="submit" id = "connect_button">Connect</button>
         </form>
+      </div>
+
+      <div id = "connection_error" class = "error">Error</div>
+
+    </div>
+
+
+    <div id = "remote_device_part">
+      <div id = "remote_device_info">
+          <h3>Remote device data</h3>
+
+          <div id = "remote_device_info_container">
+            <div id = "remote_device_info_left">
+              <h3>Left part</h3>
+              <div id = "remote_device_info_GPS">
+                <h5>GPS</h5>
+                <table>
+                  <tr>
+                    <td>Alt</td>
+                    <td data-gps = "alt">None</td>
+                  </tr>
+                  <tr>
+                    <td>Lat</td>
+                    <td data-gps = "lat">None</td>
+                  </tr>
+                  <tr>
+                    <td>Lon</td>
+                    <td data-gps = "lon">None</td>
+                  </tr>
+                  <tr>
+                    <td>Speed</td>
+                    <td data-gps = "speed">None</td>
+                  </tr>
+                  <tr>
+                    <td>Sat</td>
+                    <td data-gps = "sat">None</td>
+                  </tr>
+                  
+                </table>
+
+              </div>
+            </div>
+
+            <div id = "remote_device_info_right">
+              <h3>Right part</h3>
+            </div>
+
+          </div>
+        
+      </div>
+
+      <div id = "map_part">
+        <h3>Map part</h3>
+
       </div>
 
     </div>
