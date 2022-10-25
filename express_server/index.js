@@ -2,7 +2,9 @@ import { WebSocketServer } from "ws";
 
 // server intitating 
 const server = new WebSocketServer({ port: 3000 });
-
+// the type of the client trying to connect to server
+const PC_type = "PC";
+const RASP_type = "RASP";
 
 const devices = ["pc_123", "rasp_123", "PC_1", "ras_1"];
 
@@ -33,13 +35,6 @@ function analyse_message(socket, data){
   if (type == "connect"){
     deal_connection(socket, data);
   }
-  // server.clients.forEach(function each(client)
-  server.clients.forEach(function each(client) {
-    console.log(".........................");
-    console.log(client.client_type);
-    console.log(client.remote_device_id);
-    console.log(".........................");
-  });
 }
 
 /**
@@ -59,23 +54,38 @@ function deal_connection(socket, data){
   var remote_device_id = data["remote_device_id"];
   var socket_type = data["client_type"];
 
-  if((devices.includes(client_id) ) && (devices.includes(remote_device_id))){   
-    if (!is_remote_device_busy(remote_device_id)){
-      
-      socket.send(JSON.stringify({
-        type: "connect",
-        answer : "accepted"
-      }));
-      socket.client_id = client_id;
-      socket.remote_device_id = remote_device_id;
-      socket.client_type = socket_type
-      console.log("accepted");
-    } else{
-      reject_connection(socket, "Remote device is busy");
-    }
-    
+  if((socket_type == PC_type)){
+    if ((devices.includes(client_id) ) && (devices.includes(remote_device_id))){   
+      if (!is_remote_device_busy(remote_device_id)){
+        
+        socket.send(JSON.stringify({
+          type: "connect",
+          answer : "accepted"
+        }));
+        socket.client_id = client_id;
+        socket.remote_device_id = remote_device_id;
+        socket.client_type = socket_type
+        console.log("accepted");
+      } else{
+        reject_connection(socket, "Remote device is busy");
+      } 
   } else{
     reject_connection(socket, "Error in id");
+  }
+  }
+
+  if ((socket_type == RASP_type)){
+    if (devices.includes(remote_device_id)){
+    socket.send(JSON.stringify({
+      type: "connect",
+      answer : "accepted"
+    }));
+    socket.remote_device_id = remote_device_id;
+    socket.client_type = socket_type
+    console.log("accepted");
+    } else{
+    reject_connection(socket, "Error in id");
+    }
   }
 }
 

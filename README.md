@@ -15,7 +15,9 @@ Server address : ws://localhost:3000
 ## Data format
 
 * Connection to server : 
-  * Client to server : { type: 'connect', client_id: '...', remote_device_id: '...', client_type : 'PC' or 'RASP' }
+  * Client (PC) to server : { type: 'connect', client_id: '...', remote_device_id: '...', client_type : 'PC' }
+  * Client (RASP) to server : { type: 'connect', 
+  remote_device_id: '...', client_type : 'RASP' }
   * Server to client : accept or reject connection
     * { "type": "connect", "answer": "accepted" }
     * { "type": "connect", "answer": "rejected", "message": A }, where A in {"Error in id"}
