@@ -25,7 +25,7 @@ Server address : ws://localhost:3000
   * About connection of remote_device : {type : "remote_device_presence", 
   answer : true or false, remote_device_id : ""}
 * Command from client to remote_device : 
-  * {type : "command", }
+  * {type : "command", data : {servo_1 : .., servo_2 : .., servo_3 : ..}}
 
 
 ## Planning :
