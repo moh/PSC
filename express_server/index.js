@@ -1,4 +1,5 @@
 import { WebSocketServer } from "ws";
+import {json_answer_connection, json_answer_remote_device_status} from "./json_format.js";
 
 // server intitating 
 const server = new WebSocketServer({ port: 3000 });
@@ -7,7 +8,7 @@ const PC_type = "PC";
 const RASP_type = "RASP";
 
 // a list that contains the remote devices that are connected to server
-server.remote_devices_connected_list = [];
+server.remote_devices_connected_list = new Set();
 
 const devices = ["pc_123", "rasp_123", "PC_1", "ras_1"];
 
@@ -18,7 +19,7 @@ server.on("connection", (socket) => {
   socket.on("message", (data) => {analyse_message(socket, data);});
 
   socket.on("close", () => {
-    console.log("connection closed id = " + socket.client_id);
+    connection_closed(socket);
   });
 });
 
@@ -64,7 +65,10 @@ function deal_connection(socket, data){
         socket.send(json_answer_connection(true));
         socket.client_id = client_id;
         socket.remote_device_id = remote_device_id;
-        socket.client_type = socket_type
+        socket.client_type = socket_type;
+        // send if remote_device is connected
+        socket.send(json_answer_remote_device_status(
+          is_remote_device_connected(server, socket.remote_device_id), remote_device_id));
         console.log("accepted");
       } else{
         reject_connection(socket, "Remote device is busy");
@@ -99,6 +103,18 @@ function reject_connection(socket, error){
   socket.close();
 }
 
+/**
+ * Function called when connection is closed with a socket
+ * If the socket is a remote device, 
+ * then remove it from list and inform PC that remote device is down
+ * @param {*} socket the socket that is down
+ */
+function connection_closed(socket){
+  if(socket.client_type == RASP_type){
+    remote_device_disconnected(server, socket.remote_device_id);
+  }
+}
+
 /*
 -------------------------
 Remote device part 
@@ -107,6 +123,7 @@ Remote device part
 
 /**
  * Check if remote_device (raspberry) is already linked to a client (PC)
+ * @param {*} server : the server object
  * @param {*} remote_device_id : the id of the remote_device
  * @returns true if remote_device is connected to a PC, false if not
  */
@@ -120,40 +137,41 @@ function is_remote_device_busy(server, remote_device_id){
 }
 
 
-
+/**
+ * function excuted when a remote_device is connected to the server
+ * The function send to the PC that is bind to this remote device 
+ * in case it is connected to server
+ *  
+ * @param {*} server : the server object 
+ * @param {*} remote_device_id : the id of the remote_device
+ */
 function remote_device_connected(server, remote_device_id){
-  server.remote_devices_connected_list.push(remote_device_id);
+  server.remote_devices_connected_list.add(remote_device_id);
+  // search for the PC bind to that remote_device
   for(let client of server.clients){
     if ((client.client_type == PC_type) && (client.remote_device_id == remote_device_id)){
-      break;
+      client.send(json_answer_remote_device_status(true, remote_device_id));
     }
   }
 }
 
 
-/*
-------------------------------------------
-Part of JSON message to send to client
-------------------------------------------
-*/
+function remote_device_disconnected(server, remote_device_id){
+  server.remote_devices_connected_list.delete(remote_device_id);
+  // search for the PC bind to that remote_device
+  for(let client of server.clients){
+    if ((client.client_type == PC_type) && (client.remote_device_id == remote_device_id)){
+      client.send(json_answer_remote_device_status(false, remote_device_id));
+    }
+  }
+}
 
 /**
- * This function returns a JSON string that indicate if the connection is accpeted or not
- * @param {*} accepted boolean to indicate if connection is accepted or not
- * @param {*} message message in case if connection is srejected
- * @returns 
+ * Check if server is connected to server, if it is in the list or not
+ * @param {*} server : the server object 
+ * @param {*} remote_device_id : the id of remote_device 
+ * @returns true if remote device is connected to server
  */
-function json_answer_connection(accepted, message = ""){
-  if(accepted){
-    return JSON.stringify({
-      type: "connect",
-      answer : "accepted"
-    })
-  } else{
-    return JSON.stringify({
-      type: "connect",
-      answer : "rejected",
-      message : message
-    })
-  }
+function is_remote_device_connected(server, remote_device_id){
+  return server.remote_devices_connected_list.has(remote_device_id);
 }

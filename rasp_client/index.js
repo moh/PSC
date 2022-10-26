@@ -15,23 +15,37 @@ function connection_main(){
   console.log("trying to connect ...");
   socket = new WebSocket("ws://localhost:3000");
 
-  console.log("open ... ");
+  
   socket.addEventListener("open", () => {
     // send a message to the server
+    console.log("open ... ");
     socket.send(JSON.stringify({
       type: "connect",
       remote_device_id : remote_device_id,
       client_type : "RASP"
     }));
   });
+
   // receive a message from the server
   socket.addEventListener("message", ({ data }) => {
-    const packet = JSON.parse(data);
+    data = JSON.parse(data);
+    console.log("heyy");
     if((data["type"] == "connect") && (data["answer"] == "accepted")){
       connected = true;
       console.log("connected to server");
     }
   });
+
+  // when connection is closed, try to reconnect 
+  socket.on("close", () => {
+    console.log("closed ... ");
+    console.log(connected);
+    if(connected){
+      console.log("closed trying  ... ");
+      setTimeout(connection_main, 1000);
+    }
+  });
+
 
   socket.onerror = function (error){
     console.log("test");
@@ -40,6 +54,8 @@ function connection_main(){
       setTimeout(connection_main, 1000);
     }
   }
+
+
 }
 
 

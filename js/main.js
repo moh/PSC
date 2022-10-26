@@ -51,6 +51,13 @@ function process_server_answer(data){
             change_connection_state(false);
             show_network_error(data["message"]);
         }
+    } 
+    else if(data["type"] == "remote_device_presence"){
+        if (data["answer"]){
+            change_remote_device_connection(true, data["remote_device_id"]);
+        } else{
+            change_remote_device_connection(false, data["remote_device_id"]);
+        }
     }
 }
 
@@ -127,6 +134,19 @@ function hide_network_error(){
     document.getElementById("connection_error").style.display = "none";
 }
 
+
+/**
+ * 
+ * @param {*} status boolean, true if remote device is connected
+ * @param {*} remote_device_id id of the remote device 
+ */
+function change_remote_device_connection(status, remote_device_id){
+    if(status){
+        document.getElementById("remote_device_status").innerHTML = "Remote device <" + remote_device_id + "> : Connected";
+    } else{
+        document.getElementById("remote_device_status").innerHTML = "Remote device <" + remote_device_id + "> : Not connected";
+    }
+}
 
 function main(){
     document.getElementById("connect_button").addEventListener("click", connect_server);
