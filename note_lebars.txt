@@ -1,0 +1,8 @@
+On ubuntu : 
+-----------
+
+wvdial then we can 
+
+dmesg - 
+
+reverse tunnel ssh 
