@@ -1,5 +1,5 @@
 import { WebSocketServer } from "ws";
-import {json_answer_connection, json_answer_remote_device_status} from "./json_format.js";
+import {json_answer_connection, json_answer_remote_device_status,json_remote_device_associated} from "./json_format.js";
 
 // server intitating 
 const server = new WebSocketServer({ port: 3000 });
@@ -66,9 +66,22 @@ function deal_connection(socket, data){
         socket.client_id = client_id;
         socket.remote_device_id = remote_device_id;
         socket.client_type = socket_type;
-        // send if remote_device is connected
-        socket.send(json_answer_remote_device_status(
-          is_remote_device_connected(server, socket.remote_device_id), remote_device_id));
+        socket.remote_device_socket = null;
+        
+        
+        // if remote_device is connected to server then send to the pc and bind sockets
+        if (is_remote_device_connected(server, socket.remote_device_id)){
+          socket.send(json_answer_remote_device_status(true, remote_device_id));
+          // bind the sockets 
+          bind_pc_remote_device_sockets(server, socket, socket.remote_device_id);
+        } else{
+          socket.send(json_answer_remote_device_status(false, remote_device_id));
+        }
+        
+
+        // check if remote device is associated to a client, and inform remote device if it is the case
+        send_remote_device_associated(server, socket, true);
+
         console.log("accepted");
       } else{
         reject_connection(socket, "Remote device is busy");
@@ -80,12 +93,16 @@ function deal_connection(socket, data){
 
   if ((socket_type == RASP_type)){
     if (devices.includes(remote_device_id)){
-    socket.send(json_answer_connection(true));
-    socket.remote_device_id = remote_device_id;
-    socket.client_type = socket_type;
-    // update that remote device is connected 
-    remote_device_connected(server, remote_device_id);
-    console.log("accepted");
+      socket.send(json_answer_connection(true));
+      socket.remote_device_id = remote_device_id;
+      socket.client_type = socket_type;
+      socket.pc_socket = null;
+      // update that remote device is connected to PC 
+      remote_device_connected(server, socket, remote_device_id);
+      // check if remote device is associated to a client, and inform remote device if it is the case
+      send_remote_device_associated(server, socket, true);
+      
+      console.log("accepted");
     } else{
     reject_connection(socket, "Error in id");
     }
@@ -111,8 +128,10 @@ function reject_connection(socket, error){
  */
 function connection_closed(socket){
   if(socket.client_type == RASP_type){
-    remote_device_disconnected(server, socket.remote_device_id);
-  }
+    remote_device_disconnected(server, socket, socket.remote_device_id);
+  } else if(socket.client_type == PC_type){
+    send_remote_device_associated(server, socket, false);
+  } 
 }
 
 /*
@@ -143,26 +162,56 @@ function is_remote_device_busy(server, remote_device_id){
  * in case it is connected to server
  *  
  * @param {*} server : the server object 
+ * @param {*} socket : the socket of remote device (RASP)
  * @param {*} remote_device_id : the id of the remote_device
  */
-function remote_device_connected(server, remote_device_id){
+function remote_device_connected(server, remote_device_socket, remote_device_id){
   server.remote_devices_connected_list.add(remote_device_id);
+  console.log("Hereee ");
   // search for the PC bind to that remote_device
   for(let client of server.clients){
     if ((client.client_type == PC_type) && (client.remote_device_id == remote_device_id)){
+      // store the PC socket in the socket related to remote device bound to it
+      remote_device_socket.pc_socket = client;
+      // store the remote device socket to the PC socket bound to it
+      client.remote_device_socket = remote_device_socket;
       client.send(json_answer_remote_device_status(true, remote_device_id));
     }
   }
 }
 
+/**
+ * this function is called when a PC is connected to server, 
+ * it searches for the remote device socket associated to it and bind the sockets 
+ * @param {*} server the server socket object
+ * @param {*} pc_socket the socket of client type PC
+ * @param {*} remote_device_id the remote device id of rasp connected to pc_socket
+ */
+function bind_pc_remote_device_sockets(server, pc_socket, remote_device_id){
+  for(let client of server.clients){
+    if ((client.client_type == RASP_type) && (client.remote_device_id == remote_device_id)){
+      pc_socket.remote_device_socket = client;
+      client.pc_socket = pc_socket;
+      client.send(json_remote_device_associated(true, pc_socket.client_id));
+    }
+  }
+}
 
-function remote_device_disconnected(server, remote_device_id){
+/**
+ * function excuted when remote device disconnect from the server, 
+ * it informs the PC bound to the remote device.
+ * 
+ * @param {*} server the server socket object
+ * @param {*} remote_device_socket remote device socket 
+ * @param {*} remote_device_id the id of the remote device 
+ */
+function remote_device_disconnected(server, remote_device_socket, remote_device_id){
   server.remote_devices_connected_list.delete(remote_device_id);
   // search for the PC bind to that remote_device
-  for(let client of server.clients){
-    if ((client.client_type == PC_type) && (client.remote_device_id == remote_device_id)){
-      client.send(json_answer_remote_device_status(false, remote_device_id));
-    }
+  if (remote_device_socket.pc_socket != null){
+    remote_device_socket.pc_socket.send(json_answer_remote_device_status(false, remote_device_id));
+    // reset the remote device socket of the pc 
+    remote_device_socket.pc_socket.remote_device_socket = null; 
   }
 }
 
@@ -174,4 +223,31 @@ function remote_device_disconnected(server, remote_device_id){
  */
 function is_remote_device_connected(server, remote_device_id){
   return server.remote_devices_connected_list.has(remote_device_id);
+}
+
+/**
+ * This function informs the remote device if it associated to a PC or not
+ * @param {*} server : server object
+ * @param {*} socket : socket of the client (PC or RASP)
+ * @param {*} associated : bool if the remote device is associated to PC or not
+ */
+function send_remote_device_associated(server, socket, associated){
+  // if socket is a PC, then search for remote device (RASP) that is connected to server and associated to this PC
+  // then send to the remote device that it is associated to a PC or not (value of associated)
+  if (socket.client_type == PC_type){
+    if (socket.remote_device_socket != null){
+      socket.remote_device_socket.send(json_remote_device_associated(associated, socket.client_id));
+    }
+  }
+
+  // if socket is a RASP, then search for PC that is connected to server and associated to that remote device
+  // then send to the remote device that it is associated to a PC or not (value of associated)
+  else if (socket.client_type == RASP_type){
+    if (socket.pc_socket != null){
+      socket.send(json_remote_device_associated(associated, socket.pc_socket.client_id));
+    } 
+    
+  }
+
+
 }

@@ -21,11 +21,28 @@ Server address : ws://localhost:3000
   * Server to client : accept or reject connection
     * { type: "connect", answer: "accepted" }
     * { type: "connect", answer: "rejected", message: A }, where A in {"Error in id"}
-* Info from server to client : 
+* Info from server to client (PC) : 
   * About connection of remote_device : {type : "remote_device_presence", 
   answer : true or false, remote_device_id : ""}
+* Info from server to client (RASP) : 
+  * That RASP is associated to a PC : {type : "PC_presence", answer : true or false, client_id : pc_client_id}
 * Command from client to remote_device : 
-  * {type : "command", data : {servo_1 : .., servo_2 : .., servo_3 : ..}}
+  * set servos : {type : "command", data : {servo_1 : .., servo_2 : .., servo_3 : ..}}
+  * Ask for data : {type : "get_data", data : A} where A in {"*", "SERVO", "GPS", "WIND"}
+* From remote_device to client : 
+  * Send data : {type : "send_data", data : {...}} depends on the data type asked by client
+ 
+## Socket information : 
+In the express server index.js : 
+* attributes of socket of PC : 
+  * client_id : the id of the PC gui
+  * remote_device_id : the id of remote device that it wants to control
+  * client type : "PC" or PC_type
+  * remote_device_socket : socket of the remote device bound to it ( it is initialised when the remote device is connected to server)
+* attributes of socket of RASP :
+  * remote_device_id : the id of itself
+  * client_type : "RASP" or RASP_type
+  * pc_socket : the socket of the pc bind to it ( initialised when the two are connected )
 
 
 ## Planning :
