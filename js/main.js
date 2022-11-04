@@ -148,7 +148,17 @@ function change_remote_device_connection(status, remote_device_id){
     }
 }
 
+// Test function 
+function test_send(){
+    socket.send(JSON.stringify({
+        type : "command",
+        data : { servo_1 : 120, servo_2 : 90, servo_3 : 100}
+    }));
+}
+
 function main(){
     document.getElementById("connect_button").addEventListener("click", connect_server);
 
+    // Test part
+    document.getElementById("test_send_button").addEventListener("click", test_send);
 }

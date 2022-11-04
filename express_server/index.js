@@ -38,6 +38,8 @@ function analyse_message(socket, data){
   var type = data["type"];
   if (type == "connect"){
     deal_connection(socket, data);
+  } else if (type == "command"){
+    send_command(socket, data);
   }
 }
 
@@ -245,9 +247,27 @@ function send_remote_device_associated(server, socket, associated){
   else if (socket.client_type == RASP_type){
     if (socket.pc_socket != null){
       socket.send(json_remote_device_associated(associated, socket.pc_socket.client_id));
-    } 
-    
+    }  
   }
+}
 
+/*
+-----------------
+part related to sending data 
+------------------
+*/
 
+/**
+ * This function send the command data send from PC to RASP
+ * @param {*} socket socket of PC
+ * @param {*} data data sent by PC in JSON form
+ */
+function send_command(socket, data){
+  console.log("HEREEE send command ");
+  console.log(socket.socket_type);
+  console.log(socket.remote_device_socket);
+  if ((socket.socket_type == PC_type) && (socket.remote_device_socket != null)){
+    
+    socket.remote_device_socket.send(JSON.stringify(data));
+  }
 }
