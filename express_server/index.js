@@ -263,11 +263,7 @@ part related to sending data
  * @param {*} data data sent by PC in JSON form
  */
 function send_command(socket, data){
-  console.log("HEREEE send command ");
-  console.log(socket.socket_type);
-  console.log(socket.remote_device_socket);
-  if ((socket.socket_type == PC_type) && (socket.remote_device_socket != null)){
-    
+  if ((socket.client_type == PC_type) && (socket.remote_device_socket != null)){
     socket.remote_device_socket.send(JSON.stringify(data));
   }
 }

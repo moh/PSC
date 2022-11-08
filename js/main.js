@@ -154,6 +154,7 @@ function test_send(){
         type : "command",
         data : { servo_1 : 120, servo_2 : 90, servo_3 : 100}
     }));
+    console.log("Testing command ... ");
 }
 
 function main(){
