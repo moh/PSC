@@ -40,6 +40,7 @@ function connection_main(){
       connected = true;
       console.log("connected to server");
       setInterval(send_gps, 500);
+      setInterval(send_servo, 1000);
     }
     if(data["type"] == "PC_presence"){
       if (data["answer"] == true){
@@ -80,6 +81,15 @@ function send_gps(){
     type: "send_data",
     data_type: "GPS",
     data : {"alt" : rand_nb(), "lat" : rand_nb(), "lon" : rand_nb(), "speed" : rand_nb(), "sat" : rand_nb() }
+  }));
+}
+
+function send_servo(){
+  if(!connected || !connected_to_PC){return;}
+  socket.send(JSON.stringify({
+    type: "send_data",
+    data_type: "SERVO",
+    data : {"servo_1" : rand_nb(), "servo_2" : rand_nb(), "servo_3" : rand_nb()}
   }));
 }
 

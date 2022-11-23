@@ -67,12 +67,16 @@ function process_server_answer(data){
             update_gps_data(data["data"]);
         }
 
+        if (data["data_type"] == "SERVO"){
+            update_servo_data(data["data"]);
+        }
+
         if (data["data_type"] == "*"){
             update_gps_data(data["data"]);
+            update_servo_data(data["data"]);
         }
 
     }
-
 }
 
 /**
@@ -180,6 +184,18 @@ function update_gps_data(data){
        if(el != null){
         el.innerHTML = data[info];
        } 
+    }
+}
+
+// -----------------------
+// update servo data
+// -----------------------
+
+function update_servo_data(data){
+    for(info in data){
+        if(info.includes("servo")){
+            rotate_servo(info, data[info]);
+        }
     }
 }
 
