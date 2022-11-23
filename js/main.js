@@ -51,7 +51,8 @@ function process_server_answer(data){
             change_connection_state(false);
             show_network_error(data["message"]);
         }
-    } 
+    }
+    // answer about remote device presence 
     else if(data["type"] == "remote_device_presence"){
         if (data["answer"]){
             change_remote_device_connection(true, data["remote_device_id"]);
@@ -59,6 +60,19 @@ function process_server_answer(data){
             change_remote_device_connection(false, data["remote_device_id"]);
         }
     }
+    // answer about GPS data
+    // type : "send_data", data_type
+    else if(data["type"] == "send_data"){
+        if (data["data_type"] == "GPS"){
+            update_gps_data(data["data"]);
+        }
+
+        if (data["data_type"] == "*"){
+            update_gps_data(data["data"]);
+        }
+
+    }
+
 }
 
 /**
@@ -94,10 +108,14 @@ function change_connection_state(state){
         connected = true;
         hide_network_error();
         document.getElementById("connect_button").disabled = true ;
+        document.getElementById("connect_button").classList.remove("connect_button_activated");
+        document.getElementById("connection_state").classList.add("connected");
         document.getElementById("connection_state").innerHTML = "Connected to Server";
     } else{
         connected = false;
         document.getElementById("connect_button").disabled = false ;
+        document.getElementById("connect_button").classList.add("connect_button_activated");
+        document.getElementById("connection_state").classList.remove("connected");
         document.getElementById("connection_state").innerHTML = "Not connected to server";
     }
 }
@@ -142,11 +160,29 @@ function hide_network_error(){
  */
 function change_remote_device_connection(status, remote_device_id){
     if(status){
-        document.getElementById("remote_device_status").innerHTML = "Remote device <" + remote_device_id + "> : Connected";
+        document.getElementById("remote_device_status").innerHTML = "Remote device (" + remote_device_id + ") : <div class='rd_connected'>Connected</div>";
     } else{
-        document.getElementById("remote_device_status").innerHTML = "Remote device <" + remote_device_id + "> : Not connected";
+        document.getElementById("remote_device_status").innerHTML = "Remote device (" + remote_device_id + ") : <div class='rd_disconnected'>Not connected</div>";
     }
 }
+
+// -----------------------
+// About GPS 
+// -----------------------
+
+/**
+ * display GPS information 
+ * @param {*} data a dictionnary that contains the informations 
+ */
+function update_gps_data(data){
+    for(info in data){
+       el = document.querySelector('[data-gps="' + info + '"]');
+       if(el != null){
+        el.innerHTML = data[info];
+       } 
+    }
+}
+
 
 // Test function 
 function test_send(){
@@ -159,7 +195,7 @@ function test_send(){
 
 function main(){
     document.getElementById("connect_button").addEventListener("click", connect_server);
-
+    initiate_servos();
     // Test part
-    document.getElementById("test_send_button").addEventListener("click", test_send);
+    // document.getElementById("test_send_button").addEventListener("click", test_send);
 }

@@ -9,6 +9,7 @@ import { WebSocket } from "ws";
 const remote_device_id = "rasp_123";
 var socket;
 
+
 var connected = false;
 var connected_to_PC = false;
 var associated_PC = null;
@@ -38,6 +39,14 @@ function connection_main(){
     if((data["type"] == "connect") && (data["answer"] == "accepted")){
       connected = true;
       console.log("connected to server");
+      setInterval(send_gps, 500);
+    }
+    if(data["type"] == "PC_presence"){
+      if (data["answer"] == true){
+        connected_to_PC = true;
+      } else{
+        connected_to_PC = false;
+      }
     }
   });
 
@@ -45,6 +54,8 @@ function connection_main(){
   socket.on("close", () => {
     console.log("closed ... ");
     console.log(connected);
+    connected_to_PC = false;
+    // if it was connected 
     if(connected){
       console.log("closed trying  ... ");
       setTimeout(connection_main, 1000);
@@ -54,13 +65,27 @@ function connection_main(){
 
   socket.onerror = function (error){
     console.log("test");
+    connected_to_PC = false;
     if(!connected){
       console.log("error ... ");
       setTimeout(connection_main, 1000);
     }
   }
+}
 
 
+function send_gps(){
+  if(!connected || !connected_to_PC){return;}
+  socket.send(JSON.stringify({
+    type: "send_data",
+    data_type: "GPS",
+    data : {"alt" : rand_nb(), "lat" : rand_nb(), "lon" : rand_nb(), "speed" : rand_nb(), "sat" : rand_nb() }
+  }));
+}
+
+// a test function 
+function rand_nb(){
+  return Math.floor(Math.random() * 100);
 }
 
 connection_main();

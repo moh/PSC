@@ -30,7 +30,7 @@ Server address : ws://localhost:3000
   * set servos : {type : "command", data : {servo_1 : .., servo_2 : .., servo_3 : ..}}
   * Ask for data : {type : "get_data", data : A} where A in {"*", "SERVO", "GPS", "WIND"}
 * From remote_device to client : 
-  * Send data : {type : "send_data", data : {...}} depends on the data type asked by client
+  * Send data : {type : "send_data", data_type : A, data : {...}} depends on the data type asked by client, where A in {"*", "SERVO", "GPS", "WIND"}
  
 ## Socket information : 
 In the express server index.js : 
@@ -58,11 +58,6 @@ In the express server index.js :
 * Server : 
   * prevent connection to remote_device while busy [DONE]
   * Inform PC when remote device is connected or not [DONE]
-  * Route messages 
+  * Route messages [DONE]
 * Organisation :
   * Define a format for data 
-
-
-type : "remote_device_presence",
-            answer : present,
-            remote_device_id : remote_device_id

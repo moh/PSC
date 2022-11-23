@@ -20,15 +20,43 @@ body{
 }
 
 .network_div #connection_state{
+  background-color: lightgrey;
   margin-bottom: 20px;
   padding: 10px;
+  text-align: center;
+}
+
+.network_div #connection_state.connected{
+  background-color: rgb(144, 238, 144);
+}
+
+.network_div #connect_button {
+  background-color: white;
+  color: black;
+  border: 2px solid grey;
+  width: 100%;
+  height: 35px;
+}
+
+
+.network_div #connect_button.connect_button_activated:hover{
+  background-color: gainsboro;
+  cursor: pointer;
 }
 
 .network_div #connection_error{
   display: none;
+  padding: 10px;
+  margin-top: 10px;
+  text-align: center;
+  background-color: none;
 }
 
-.input_block{
+.network_div .error{
+  background-color: rgb(255, 100, 0) ;
+}
+
+.network_div .input_block{
 
   display: flex;
   flex-direction: column;
@@ -36,18 +64,67 @@ body{
 
 }
 
+.network_div .input_block input{
+  margin-top: 5px;
+  padding: 5px;
+  border-radius: 0%;
+  border-width: thin;
+}
+
+
 #remote_device_part{
   width: 85%;
+  padding-left: 5px;
 }
 
 #remote_device_part #remote_device_info_container{
   display: flex;
 }
 
+#remote_device_part .rd_disconnected{
+  color: rgb(255, 100, 0);
+  display: inline;
+}
+
+#remote_device_part .rd_connected{
+  color :rgb(144, 238, 144);
+  display: inline;
+}
+
 #remote_device_part #remote_device_info_left{
-  width: 50%;
+  width: 33%;
+  border-right: 1px solid grey;
+  padding-left: 20px;
+}
+
+#remote_device_part #remote_device_info_left #remote_device_info_GPS table td:first-child{
+  padding-right: 50px;
 }
 
 #remote_device_part #remote_device_info_right{
-  width: 50%;
+  width: 33%;
+  border-right: 1px solid grey;
+  padding-left: 20px;
+}
+
+#remote_device_part #remote_device_info_servos{
+  width: 33%;
+  padding-left: 20px;
+}
+
+#remote_device_part #remote_device_info_servos .servo_info{
+  display: inline;
+}
+
+#remote_device_part #remote_device_info_servos .servo_info p{
+  display: inline;
+  width: fit-content;
+}
+
+#remote_device_part #remote_device_info_servos .servo_info canvas{
+  transform: translateY(20px);
+}
+
+#remote_device_part #remote_device_info_servos .servo_info input{
+  width: 30px;
 }

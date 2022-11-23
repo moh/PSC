@@ -40,6 +40,8 @@ function analyse_message(socket, data){
     deal_connection(socket, data);
   } else if (type == "command"){
     send_command(socket, data);
+  } else{
+    route_message(socket, data);
   }
 }
 
@@ -265,5 +267,16 @@ part related to sending data
 function send_command(socket, data){
   if ((socket.client_type == PC_type) && (socket.remote_device_socket != null)){
     socket.remote_device_socket.send(JSON.stringify(data));
+  }
+}
+
+/**
+ * This function route the message sent from remote device to pc
+ * @param {*} socket socket of remote device  
+ * @param {*} data data sent by remote device in JSON format
+ */
+function route_message(socket, data){
+  if ((socket.client_type == RASP_type) && (socket.pc_socket != null)){
+    socket.pc_socket.send(JSON.stringify(data));
   }
 }
