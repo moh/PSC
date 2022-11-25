@@ -31,6 +31,7 @@ Server address : ws://localhost:3000
   * Ask for data : {type : "get_data", data : A} where A in {"*", "SERVO", "GPS", "WIND"}
 * From remote_device to client : 
   * Send data : {type : "send_data", data_type : A, data : {...}} depends on the data type asked by client, where A in {"*", "SERVO", "GPS", "WIND"}
+  * wind data : {type : "send_data", data_type : "WIND", data : {"wind_direction" : angle, "wind_speed" : 000}}
  
 ## Socket information : 
 In the express server index.js : 

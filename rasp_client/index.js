@@ -41,6 +41,7 @@ function connection_main(){
       console.log("connected to server");
       setInterval(send_gps, 500);
       setInterval(send_servo, 1000);
+      setInterval(send_wind, 1000);
     }
     if(data["type"] == "PC_presence"){
       if (data["answer"] == true){
@@ -90,6 +91,15 @@ function send_servo(){
     type: "send_data",
     data_type: "SERVO",
     data : {"servo_1" : rand_nb(), "servo_2" : rand_nb(), "servo_3" : rand_nb()}
+  }));
+}
+
+function send_wind(){
+  if(!connected || !connected_to_PC){return;}
+  socket.send(JSON.stringify({
+    type: "send_data",
+    data_type: "WIND",
+    data : {"wind_direction" : rand_nb(), "wind_speed" : rand_nb()}
   }));
 }
 

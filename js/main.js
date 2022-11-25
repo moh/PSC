@@ -71,9 +71,14 @@ function process_server_answer(data){
             update_servo_data(data["data"]);
         }
 
+        if (data["data_type"] == "WIND"){
+            update_wind_direction(data["data"]);
+        }
+
         if (data["data_type"] == "*"){
             update_gps_data(data["data"]);
             update_servo_data(data["data"]);
+            update_gps_data(data["data"]);
         }
 
     }
@@ -188,13 +193,29 @@ function update_gps_data(data){
 }
 
 // -----------------------
-// update servo data
+// update servo and wind direction data
 // -----------------------
 
+/**
+ * update servo angle from data
+ * @param {*} data 
+ */
 function update_servo_data(data){
     for(info in data){
         if(info.includes("servo")){
             rotate_servo(info, data[info]);
+        }
+    }
+}
+
+/**
+ * update wind direction from data
+ * @param {*} data 
+ */
+function update_wind_direction(data){
+    for(info in data){
+        if(info == "wind_direction"){
+            rotate_wind_direction(data[info]);
         }
     }
 }
@@ -211,7 +232,7 @@ function test_send(){
 
 function main(){
     document.getElementById("connect_button").addEventListener("click", connect_server);
-    initiate_servos();
+    initiate_figures();
     // Test part
     // document.getElementById("test_send_button").addEventListener("click", test_send);
 }
