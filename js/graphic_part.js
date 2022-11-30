@@ -1,3 +1,6 @@
+/**
+ * This file contains the code for servo and wind part
+ */
 var ctx_servo_1, ctx_servo_2, ctx_servo_3; 
 var ctx_wind;
 var canvas_width = 50;
@@ -53,9 +56,14 @@ function initiate_wind_direction(){
  */
 function rotate_servo(servo, angle){
     var i = servo[servo.length - 1] - 1;
+    var inp_servo = document.querySelector("input[name='" + servo + "']");
     rotate_figure(angle - angle_servos[i], ctx_servos[i]);
     angle_servos[i] = angle;
-    document.querySelector("input[name='" + servo + "']").value = angle;
+
+    // modify the value if the input is not selected by user
+    if (inp_servo.dataset.modify == "true"){
+        inp_servo.value = angle;
+    }
 }
 
 /**
@@ -78,4 +86,62 @@ function rotate_figure(angle, ctx){
     ctx.rotate(angle * Math.PI / 180);
     ctx.fillStyle = 'black';
     ctx.fillRect(0,0, 25, 2);
+}
+
+/**
+ * when servo value input is checked then we call the function input_is_checked
+ */
+function initiate_servo_input(){
+    var servo_inputs = document.querySelectorAll(".servo_info input");
+    for(var x = 1; x < servo_inputs.length; x++){
+        servo_inputs[x].addEventListener("focus", input_is_checked);
+    }
+}
+
+/**
+ * Mark that the input is checked to stop changing its value
+ * @param {*} event the event 
+ */
+function input_is_checked(event){
+    event.target.dataset.modify = "false";
+}
+
+/**
+ * 
+ * @returns return a list of the value of server inputs
+ */
+function get_servos_input(){
+    var servo_inputs = document.querySelectorAll(".servo_info input");
+    var value = [];
+    for(var x = 1; x < servo_inputs.length; x++){
+        value.push(servo_inputs[x].value);
+    }
+    return value;
+}
+
+/**
+ * reset the inputs so they can be modified by the program
+ */
+function reset_servos_input(){
+    var servo_inputs = document.querySelectorAll(".servo_info input");
+    for(var x = 1; x < servo_inputs.length; x++){
+        servo_inputs[x].dataset.modify = "true";
+    }
+}
+
+function send_servo_values(){
+    // if PC not connected to server or remote device not connected to server
+    // we do nothing
+    if (!connected || !remote_device_connected){
+        return;
+    }
+
+    var servo_values = get_servos_input();
+
+    socket.send(JSON.stringify({
+        type : "command",
+        data : { servo_1 : servo_values[0], servo_2 : servo_values[1], servo_3 : servo_values[2]}
+    }));
+
+    reset_servos_input();
 }

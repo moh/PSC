@@ -4,8 +4,10 @@ const WebSocketGlobal = WebSocket;
 
 window.addEventListener('load', main);
 
-// true if client is connected to server
+// true if client is connected (PC) to server
 var connected = false;
+// true if remote device is connected and associated to PC
+var remote_device_connected = false;
 // the socket that result from the connection
 var socket;
 
@@ -168,6 +170,7 @@ function hide_network_error(){
  * @param {*} remote_device_id id of the remote device 
  */
 function change_remote_device_connection(status, remote_device_id){
+    remote_device_connected = status;
     if(status){
         document.getElementById("remote_device_status").innerHTML = "Remote device (" + remote_device_id + ") : <div class='rd_connected'>Connected</div>";
     } else{
@@ -232,7 +235,9 @@ function test_send(){
 
 function main(){
     document.getElementById("connect_button").addEventListener("click", connect_server);
+    document.getElementById("servo_change_button").addEventListener("click", send_servo_values);
     initiate_figures();
+    initiate_servo_input();
     // Test part
     // document.getElementById("test_send_button").addEventListener("click", test_send);
 }

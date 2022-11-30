@@ -6,9 +6,11 @@
     <link rel="stylesheet" href="css/index.css"> 
 
     <script src="js/main.js"></script>
+    <script src="js/map.js"></script>
     <script src="js/main_connection.js"></script>
     <script src="js/graphic_part.js"></script>
     <script src="node_modules/ws/index.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
 
   </head>
   <body>
@@ -93,20 +95,22 @@
               <div class = "servo_info">
                 <p>Servo 1 : </p>
                 <canvas id = "canvas_servo_1" height="50" width="50"></canvas>
-                <input type = "number" name = "servo_1" min = "0" max = "360"/>
+                <input type = "number" name = "servo_1" min = "0" max = "360" data-modify = "true"/>
               </div>
 
               <div class = "servo_info">
                 <p>Servo 2 : </p>
                 <canvas id = "canvas_servo_2" height="50" width="50"></canvas>
-                <input type = "number" name = "servo_2" min = "0" max = "360"/>
+                <input type = "number" name = "servo_2" min = "0" max = "360" data-modify = "true"/>
               </div>
 
               <div class = "servo_info">
                 <p>Servo 3 : </p>
                 <canvas id = "canvas_servo_3" height="50" width="50"></canvas>
-                <input type = "number" name = "servo_3" min = "45" max = "135s"/>
+                <input type = "number" name = "servo_3" min = "45" max = "135" data-modify = "true"/>
               </div>
+
+              <button type = "button" id = "servo_change_button">Send servos</button>
             </div>
 
           </div>
@@ -115,6 +119,11 @@
 
       <div id = "map_part">
         <h3>Map part</h3>
+        <div id = "map">
+          <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB41DRUbKWJHPxaFjMAwdrzWzbVKartNGg&callback=initMap&v=weekly"
+        defer></script>
+        </div>
+  
 
       </div>
 
