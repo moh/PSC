@@ -57,23 +57,23 @@
                 <table>
                   <tr>
                     <td>Alt</td>
-                    <td data-gps = "alt">None</td>
+                    <td data-gps = "alt" data-value = 0>None</td>
                   </tr>
                   <tr>
                     <td>Lat</td>
-                    <td data-gps = "lat">None</td>
+                    <td data-gps = "lat" data-value = 0>None</td>
                   </tr>
                   <tr>
                     <td>Lon</td>
-                    <td data-gps = "lon">None</td>
+                    <td data-gps = "lon" data-value = 0>None</td>
                   </tr>
                   <tr>
                     <td>Speed</td>
-                    <td data-gps = "speed">None</td>
+                    <td data-gps = "speed" data-value = 0>None</td>
                   </tr>
                   <tr>
                     <td>Sat</td>
-                    <td data-gps = "sat">None</td>
+                    <td data-gps = "sat" data-value = 0>None</td>
                   </tr>
                   
                 </table>
@@ -118,7 +118,13 @@
       </div>
 
       <div id = "map_part">
-        <h3>Map part</h3>
+        <h3>Map</h3>
+        <div id = "map_buttons">
+          <button id = "map_center" title = "Show remote device position"></button>
+          <button id = "add_location" title = "Add target" ></button>
+          <button id = "remove_location" title = "Remove target"></button>
+          <button id = "send_target">Send target</button>
+        </div>
         <div id = "map">
           <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB41DRUbKWJHPxaFjMAwdrzWzbVKartNGg&callback=initMap&v=weekly"
         defer></script>
@@ -130,3 +136,4 @@
     </div>
 
   </body>
+</html>

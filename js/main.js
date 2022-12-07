@@ -190,6 +190,7 @@ function update_gps_data(data){
     for(info in data){
        el = document.querySelector('[data-gps="' + info + '"]');
        if(el != null){
+        el.dataset.value = data[info];
         el.innerHTML = data[info];
        } 
     }
@@ -236,6 +237,13 @@ function test_send(){
 function main(){
     document.getElementById("connect_button").addEventListener("click", connect_server);
     document.getElementById("servo_change_button").addEventListener("click", send_servo_values);
+    
+    // map buttons 
+    document.getElementById("map_center").addEventListener("click", map_center);
+    document.getElementById("add_location").addEventListener("click", map_add_location);
+    document.getElementById("remove_location").addEventListener("click", map_remove_location);
+    document.getElementById("send_target").addEventListener("click", send_target);
+
     initiate_figures();
     initiate_servo_input();
     // Test part

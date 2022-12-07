@@ -36,7 +36,7 @@ function analyse_message(socket, data){
   data = JSON.parse(data);
   console.log(data);
   var type = data["type"];
-  if (type == "connect"){
+  if (type == "connect" || type == "target"){
     deal_connection(socket, data);
   } else if (type == "command"){
     send_command(socket, data);

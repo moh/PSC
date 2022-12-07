@@ -75,13 +75,14 @@ function connection_main(){
   }
 }
 
-
 function send_gps(){
+  var lat = Math.random()*100;
+  var lon = Math.random()*10;
   if(!connected || !connected_to_PC){return;}
   socket.send(JSON.stringify({
     type: "send_data",
     data_type: "GPS",
-    data : {"alt" : rand_nb(), "lat" : rand_nb(), "lon" : rand_nb(), "speed" : rand_nb(), "sat" : rand_nb() }
+    data : {"alt" : rand_nb(), "lat" : 48.715861, "lon" : 2.211261, "speed" : rand_nb(), "sat" : rand_nb() }
   }));
 }
 
