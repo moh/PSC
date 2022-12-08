@@ -3,17 +3,20 @@
  */
 import { RSA_X931_PADDING } from "constants";
 import { WebSocket } from "ws";
+import {spawn} from "child_process";
 
 
 // the id of the raspberry pi client
 const remote_device_id = "rasp_123";
 var socket;
 
-
+// var related to connection with pc
 var connected = false;
 var connected_to_PC = false;
 var associated_PC = null;
 
+// var related to python script
+const python_test = spawn("python.exe", ["python/test.py"]);
 
 
 function connection_main(){
@@ -29,6 +32,11 @@ function connection_main(){
       remote_device_id : remote_device_id,
       client_type : "RASP"
     }));
+    // test python 
+    var data = JSON.stringify([1,2,3,4,5]);
+    python_test.stdin.write(data);
+    // End data write
+    python_test.stdin.end();
   });
 
   // receive a message from the server
@@ -108,5 +116,11 @@ function send_wind(){
 function rand_nb(){
   return Math.floor(Math.random() * 100);
 }
+
+// for python output
+python_test.stdout.on('data', (data) => {
+  console.log("call python ");
+  console.log(String.fromCharCode.apply(null, data));
+});
 
 connection_main();
