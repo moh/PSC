@@ -175,6 +175,20 @@ body{
   cursor: pointer;
 }
 
+#map_part #send_target{
+  background-color: white;
+  color: black;
+  border: 2px solid grey;
+  width: 100px;
+  height: 35px;
+  transform: translateY(-12px);
+}
+
+#map_part #send_target:hover{
+  background-color: gainsboro;
+  cursor: pointer;
+}
+
 #map_part #map_buttons{
   margin-bottom: 10px;
 }

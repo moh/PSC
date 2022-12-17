@@ -16,7 +16,7 @@ var connected_to_PC = false;
 var associated_PC = null;
 
 // var related to python script
-const python_test = spawn("python.exe", ["python/test.py"]);
+const python_executer = spawn("python", ["python/test.py"]);
 
 
 function connection_main(){
@@ -34,9 +34,9 @@ function connection_main(){
     }));
     // test python 
     var data = JSON.stringify([1,2,3,4,5]);
-    python_test.stdin.write(data);
+    python_executer.stdin.write(data);
     // End data write
-    python_test.stdin.end();
+    python_executer.stdin.end();
   });
 
   // receive a message from the server
@@ -118,7 +118,7 @@ function rand_nb(){
 }
 
 // for python output
-python_test.stdout.on('data', (data) => {
+python_executer.stdout.on('data', (data) => {
   console.log("call python ");
   console.log(String.fromCharCode.apply(null, data));
 });
