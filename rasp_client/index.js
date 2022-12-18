@@ -3,8 +3,8 @@
  */
 import { RSA_X931_PADDING } from "constants";
 import { WebSocket } from "ws";
-import {spawn} from "child_process";
-
+//import {spawn} from "child_process";
+import {PythonShell} from "python-shell";
 
 // the id of the raspberry pi client
 const remote_device_id = "rasp_123";
@@ -16,8 +16,8 @@ var connected_to_PC = false;
 var associated_PC = null;
 
 // var related to python script
-const python_gps = spawn("python", ["python/gps.py"]);
-const python_servos = spawn("python", ["python/servos.py"])
+const python_gps = new PythonShell("python/gps.py");
+const python_servos = new PythonShell("python/servos.py")
 
 
 function connection_main(){
@@ -58,9 +58,8 @@ function connection_main(){
           }
       }
       else if (data["type"] == "command") {
-          python_gps.stdin.write(JSON.stringify(data["data"]));
-          // End data write
-          //python_gps.stdin.end();
+          python_servos.send(JSON.stringify(data["data"]));
+          
       }
   });
 
@@ -118,14 +117,16 @@ function send_gps(data) {
 function send_servo(data) {
     console.log("HELLOOO ");
     console.log(data);
+    // parse data from python
+    
     if (!connected || !connected_to_PC) { return; }
-    /*
+    
     socket.send(JSON.stringify({
         type: "send_data",
         data_type: "SERVO",
         data: JSON.parse(data)
     }));
-    */
+    
 }
 
 /*
@@ -165,9 +166,10 @@ function rand_nb(){
   return Math.floor(Math.random() * 100);
 }
 
+python_gps.send("HII gps");
 // for python output
-python_gps.stdout.on('data', (data) => { console.log("HELLOO FROM PYTHON"); });
+python_gps.on('message', (data) => { console.log(data); });
     //send_gps(data);});
-python_servos.stdout.on('data', (data) => { send_servo(data); });
+python_servos.on('message', (data) => { send_servo(data); });
 
 connection_main();

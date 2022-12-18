@@ -4,6 +4,10 @@
 
 `$ npm start `
 
+## Requirements
+
+* For rasp client:
+  * npm install python-shell
 
 ## Project parts
 
