@@ -16,7 +16,8 @@ var connected_to_PC = false;
 var associated_PC = null;
 
 // var related to python script
-const python_executer = spawn("python", ["python/test.py"]);
+const python_gps = spawn("python", ["python/gps.py"]);
+const python_servos = spawn("python", ["python/servos.py"])
 
 
 function connection_main(){
@@ -32,32 +33,35 @@ function connection_main(){
       remote_device_id : remote_device_id,
       client_type : "RASP"
     }));
-    // test python 
-    var data = JSON.stringify([1,2,3,4,5]);
-    python_executer.stdin.write(data);
-    // End data write
-    python_executer.stdin.end();
+    
   });
 
   // receive a message from the server
   socket.addEventListener("message", ({ data }) => {
     data = JSON.parse(data);
+    // print data 
     console.log("data =   ");
     console.log(data);
     if((data["type"] == "connect") && (data["answer"] == "accepted")){
       connected = true;
       console.log("connected to server");
-      setInterval(send_gps, 500);
-      setInterval(send_servo, 1000);
+      
+      //setInterval(send_gps, 500);
+      //setInterval(send_servo, 1000);
       setInterval(send_wind, 1000);
     }
-    if(data["type"] == "PC_presence"){
-      if (data["answer"] == true){
-        connected_to_PC = true;
-      } else{
-        connected_to_PC = false;
+      if (data["type"] == "PC_presence") {
+          if (data["answer"] == true) {
+              connected_to_PC = true;
+          } else {
+              connected_to_PC = false;
+          }
       }
-    }
+      else if (data["type"] == "command") {
+          python_gps.stdin.write(JSON.stringify(data["data"]));
+          // End data write
+          //python_gps.stdin.end();
+      }
   });
 
   // when connection is closed, try to reconnect 
@@ -83,6 +87,48 @@ function connection_main(){
   }
 }
 
+/*
+function test() {
+    // test python 
+    var data = JSON.stringify([1,2,3,4,5]);
+    python_gps.stdin.write(data);
+    // End data write
+    python_executer.stdin.end();
+}
+*/
+
+/**
+ * Send gps data to PC 
+ * data : gps data given by python file
+ * */
+function send_gps(data) {
+    console.log("Hello gps");
+    if (!connected || !connected_to_PC) { return; }
+    socket.send(JSON.stringify({
+        type: "send_data",
+        data_type: "GPS",
+        data: JSON.parse(data)
+    }));
+}
+
+/**
+ * Send servo information to PC
+ * data : servo data given by python file
+ * */
+function send_servo(data) {
+    console.log("HELLOOO ");
+    console.log(data);
+    if (!connected || !connected_to_PC) { return; }
+    /*
+    socket.send(JSON.stringify({
+        type: "send_data",
+        data_type: "SERVO",
+        data: JSON.parse(data)
+    }));
+    */
+}
+
+/*
 function send_gps(){
   var lat = Math.random()*100;
   var lon = Math.random()*10;
@@ -94,6 +140,7 @@ function send_gps(){
   }));
 }
 
+
 function send_servo(){
   if(!connected || !connected_to_PC){return;}
   socket.send(JSON.stringify({
@@ -102,6 +149,7 @@ function send_servo(){
     data : {"servo_1" : rand_nb(), "servo_2" : rand_nb(), "servo_3" : rand_nb()}
   }));
 }
+*/
 
 function send_wind(){
   if(!connected || !connected_to_PC){return;}
@@ -118,9 +166,8 @@ function rand_nb(){
 }
 
 // for python output
-python_executer.stdout.on('data', (data) => {
-  console.log("call python ");
-  console.log(String.fromCharCode.apply(null, data));
-});
+python_gps.stdout.on('data', (data) => { console.log("HELLOO FROM PYTHON"); });
+    //send_gps(data);});
+python_servos.stdout.on('data', (data) => { send_servo(data); });
 
 connection_main();
