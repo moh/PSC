@@ -1,0 +1,36 @@
+11
+Added SPEBOT simulation.
+
+10
+Corrected bug in IM483I.
+
+9
+Minor updates.
+
+8
+Updated IM483IInterface and OntrakInterface.
+
+7
+Added startup message UxVSim VXXX.
+Updated OntrakInterface.
+Minor updates.
+
+6
+Updated IM483IInterface.c.
+Added SOG and COG for VAIMOS.
+Updates for VAIMOS.
+
+5
+Improved compatibility with Ubuntu 20.04. 
+
+4
+Added SOG and COG for BOATBOT.
+
+3
+Added SBGInterface.
+
+2
+Added robid parameter to support several robots.
+
+1
+Initial version from VSim V13.

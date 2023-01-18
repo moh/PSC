@@ -1,0 +1,114 @@
+% robid (see Globals.h)
+0x00000400
+% bEnableSimulator (0 : no, 1 : yes)
+1
+% bEmbeddedCom (0 : no, 1 : yes)
+1
+% bResetFiles (0 : no, 1 : yes)
+1
+% bRealTime (0 : no, 1 : yes)
+1
+% loop_sleep_time (time step in ms)
+20
+% lat0 (reference GPS position in decimal degrees)
+%48.3635
+%48.3654
+%48.3920
+48.376687
+%48.3904
+% long0 (reference GPS position in decimal degrees)
+%-4.4875
+%-4.5000
+%-4.4280
+-4.492376
+%-4.4245
+% x (in m)
+0.0
+% y (in m)
+0.0
+% theta (yaw in rad)
+1.2
+% v (speed in m/s)
+0.5
+% omega (yaw rate of turn in rad/s)
+-0.025
+% phi (roll in rad)
+0.1
+% phiPoint (roll rate of turn in rad/s)
+-0.02
+% deltag (in rad)
+0.0
+% deltavmax (in rad)
+0.0
+% m (mass in kg)
+280.0
+% Jx (inertial moment w.r.t. x)
+15.0
+% Jz (inertial moment w.r.t. z)
+50.0
+% rg (distance from the rudder to G in m)
+1.5
+% rv (distance from the mast to G in m)
+0.5
+% l (distance from the sail center of pressure to the mast in m)
+0.5
+% alphatheta (yaw friction coefficient)
+125.0
+%150.0
+% alphaf (forward friction coefficient)
+20.0
+%35.0
+% alphag (rudder force coefficient)
+75.0
+%150.0
+% alphav (sail force coefficient)
+22.0
+%30.0
+% alphaphi (Roll friction coefficient)
+40.0
+% alphaw (perturbations due to waves coefficient)
+100.0
+%150.0
+% hv (distance from the sail center of pressure to G in m)
+2.1
+%2.15
+% leq (length of the equivalent pendulum in roll in m)
+0.2
+% deltavminreal (min equivalent opening angle of the real sail in rad)
+0.30
+% deltavmaxreal (max equivalent opening angle of the real sail in rad)
+1.20
+% V_med (wind speed in m/s)
+6.0
+%7.5
+% V_var (wind speed max variation in m/s)
+1.0
+%0
+% psi_med (wind direction in rad)
+4.71
+% psi_var (wind direction max variation in rad)
+0.39
+%0
+% beta (current due to the wind, in fraction of the wind speed)
+0.01
+%0
+% Vc_med (current speed in m/s)
+1
+%0
+% Vc_var (current speed max variation in m/s)
+1
+%0
+% psic_med (current direction in rad)
+-1.5
+% psic_var (current direction max variation in rad)
+0.39
+%0
+% hw_var (amplitude of the waves in m)
+1.0
+%0
+% gps_error (GPS error in m)
+0.25
+%0
+% mt_error (mt error in rad)
+0.05
+%0
