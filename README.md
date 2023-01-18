@@ -14,6 +14,8 @@
 ## Project parts
 
 express_server : server based on javascript
+rasp_client : contain the program in the raspberry pi
+UxVSim      : a sail boat simulator
 
 
 Server address : ws://localhost:3000
@@ -50,6 +52,35 @@ In the express server index.js :
   * remote_device_id : the id of itself
   * client_type : "RASP" or RASP_type
   * pc_socket : the socket of the pc bind to it ( initialised when the two are connected )
+
+## Simulator : UxVSim
+The folder contains a file "UxVSim.txt" which contains all the parameter for the simulation.
+The parameter "robid" should be equal to "0x00008000" to simulate a sailboat
+To run the simulator : 
+`
+make
+./UxVSim
+`
+
+When we start the program, it will produce some csv files that contain the different data read from sensors and the servos angle. We should delete those file each time before starting the program.
+
+The program have multiple servers that each simulate an electronic device:
+* Simulation of meteo station with GPS data (NMEA) on port 4001 (telnet 127.0.0.1 4001)
+  * For data starting with "$WIMDA", like "$WIMDA,30.0000,I,1.0000,B,15.5,C,,,,,,,10.2,T,10.2,M,13.0,N,6.7,M*1A"
+   * The "10.2,T," is wind direction where the 0 is to the north, and 90 is to the east.
+   * The "6.7, M*1A" is the speed of wind in m/s
+  * For data starting with "$HCHDG", like "$HCHDG,21.8,0.0,E,0.0,W*6B":
+   * The "21.8" is the direction of the cap (the ship direction), where 0 is to the north and 90 to the east
+* Simulation of IMU (Razor AHRS) on port 4007 (telnet 127.0.0.1 4007)
+  * the data is of format "#YPR=-52.26,-2.73,-12.44" that it means "yaw(z axis)", "pitch (y axis)" and "Roll (x axis)"
+   * for yaw data : it is between -180 and 180 where 0 is the north and 90 is the est  
+* Simulation of servo to control the gouvernail on port 4004:
+  * Send command of type "#0P1000\r" (an extreme side) to "#0P2000\r" (the other side)
+  * See the command in the file "SSC32IInterface.csv" using the command "tail -f SSC32IInterface.csv"
+* Simulation of servo to control the voile on port 4003:
+  * Send command of type "R0\r" (voile closed) to "R116000\r" (voile open to max), it supports also negative value "R-116000\r" for the other side
+  * See the command in the file "IM483IInterface.csv" using the command "tail -f IM483IInterface.csv"
+   
 
 
 ## Planning :

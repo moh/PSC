@@ -1,5 +1,5 @@
 % robid (see Globals.h)
-0x00000400
+0x00008000
 % bEnableSimulator (0 : no, 1 : yes)
 1
 % bEmbeddedCom (0 : no, 1 : yes)
