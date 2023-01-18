@@ -109,6 +109,22 @@ body{
   padding-left: 20px;
 }
 
+
+#remote_device_part #remote_device_info_right .rotation_info p{
+    display: inline;
+    width: fit-content;
+}
+
+#remote_device_part #remote_device_info_right .rotation_info canvas{
+    transform: translateY(20px);
+}
+
+#remote_device_part #remote_device_info_right .rotation_info input {
+    width : 40px;
+}
+
+
+
 #remote_device_part #remote_device_info_servos{
   width: 33%;
   max-width: 300px;

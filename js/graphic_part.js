@@ -1,5 +1,6 @@
 /**
  * This file contains the code for servo and wind part
+ * and for angle (yaw and roll) part
  */
 var ctx_servo_1, ctx_servo_2, ctx_servo_3; 
 var ctx_wind;
@@ -9,13 +10,23 @@ var ctx_servos = [ctx_servo_1, ctx_servo_2, ctx_servo_3];
 var angle_servos = [0, 0, 0];
 var angle_wind = 0;
 
+// yaw is the rotation angle along z axis (by magnetometer)
+var angle_yaw = 0;
+var ctx_yaw;
+// roll is the rotation angle along y axis (gyroscope and accelerometer)
+var angle_roll = 0; 
+var ctx_roll;
 
 /**
- * initiate wind and servo figures
+ * initiate wind and servo and angle direction figures
  */
 function initiate_figures(){
     initiate_servos();
     initiate_wind_direction();
+    initiate_angle_direction_yaw();
+    initiate_angle_direction_roll();
+    // initialise yaw to 0
+    rotate_direction_yaw(0);
 }
 
 /**
@@ -48,6 +59,34 @@ function initiate_wind_direction(){
     ctx_wind.translate(centerX, centerY);    
 }
 
+/**
+ * Function that initiate yaw angle direction
+ * */
+function initiate_angle_direction_yaw() {
+    var canvas;
+    canvas = document.getElementById("canvas_yaw");
+    centerX = canvas.width / 2;
+    centerY = canvas.height / 2;
+    ctx_yaw = canvas.getContext('2d');
+    ctx_yaw.fillStyle = 'black';
+    ctx_yaw.fillRect(centerX, centerY, 25, 2);
+    ctx_yaw.translate(centerX, centerY);
+}
+
+/**
+ * Function that initiate roll angle direction
+ * */
+function initiate_angle_direction_roll() {
+    var canvas;
+    canvas = document.getElementById("canvas_roll");
+    centerX = canvas.width/2;
+    centerY = canvas.height/2;
+    ctx_roll = canvas.getContext('2d');
+    ctx_roll.fillStyle = 'black';
+    ctx_roll.fillRect(centerX, centerY, 25, 2);
+    ctx_roll.translate(centerX, centerY);
+}
+
 
 /**
  * Rotate the servo with angle in respect to x axis
@@ -75,6 +114,29 @@ function rotate_wind_direction(angle){
     angle_wind = angle;
     document.querySelector("input[name='wind_direction']").value = angle;
 }
+
+/**
+ * Rotate the roll with angle in respect to x axis 
+ * @param {*} angle the angle
+ * */
+function rotate_direction_roll(angle) {
+    rotate_figure(angle - angle_roll, ctx_roll);
+    angle_roll = angle;
+    document.querySelector("input[name='roll_angle']").value = angle;
+}
+
+
+/**
+ * Rotate the yaw with angle in respect to y axis 
+ * @param {*} angle the angle
+ * */
+function rotate_direction_yaw(angle) {
+    n_angle = angle - 90
+    rotate_figure(n_angle - angle_yaw, ctx_yaw);
+    angle_yaw = n_angle;
+    document.querySelector("input[name='yaw_angle']").value = angle;
+}
+
 
 /**
  * rotate the figure by angle

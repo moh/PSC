@@ -82,7 +82,20 @@
             </div>
 
             <div id = "remote_device_info_right">
-              <h3>Right part</h3>
+              <h3>Boat data</h3>
+
+              <div class="rotation_info">
+                  <p> Roll (y): </p>
+                  <canvas id="canvas_roll" height="50" width="50"></canvas>
+                  <input type="number" name="roll_angle" min="0" max="360" readonly />
+              </div>
+
+              <div class="rotation_info">
+                  <p> Yaw (z): </p>
+                  <canvas id="canvas_yaw" height="50" width="50"></canvas>
+                  <input type="number" name="yaw_angle" min="0" max="360" readonly />
+              </div>
+
             </div>
 
             <div id = "remote_device_info_servos">

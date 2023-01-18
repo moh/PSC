@@ -8,6 +8,7 @@ import {PythonShell} from "python-shell";
 
 // the id of the raspberry pi client
 const remote_device_id = "rasp_123";
+const server_address = "ws://169.254.41.69:3000";
 var socket;
 
 // var related to connection with pc
@@ -17,12 +18,12 @@ var associated_PC = null;
 
 // var related to python script
 const python_gps = new PythonShell("python/gps.py");
-const python_servos = new PythonShell("python/servos.py")
+const python_servos = new PythonShell("python/servo.py")
 
 
 function connection_main(){
   console.log("trying to connect ...");
-  socket = new WebSocket("ws://localhost:3000");
+  socket = new WebSocket(server_address);
 
   
   socket.addEventListener("open", () => {
@@ -86,16 +87,6 @@ function connection_main(){
   }
 }
 
-/*
-function test() {
-    // test python 
-    var data = JSON.stringify([1,2,3,4,5]);
-    python_gps.stdin.write(data);
-    // End data write
-    python_executer.stdin.end();
-}
-*/
-
 /**
  * Send gps data to PC 
  * data : gps data given by python file
@@ -141,15 +132,6 @@ function send_gps(){
   }));
 }
 
-
-function send_servo(){
-  if(!connected || !connected_to_PC){return;}
-  socket.send(JSON.stringify({
-    type: "send_data",
-    data_type: "SERVO",
-    data : {"servo_1" : rand_nb(), "servo_2" : rand_nb(), "servo_3" : rand_nb()}
-  }));
-}
 */
 
 function send_wind(){
@@ -170,6 +152,6 @@ python_gps.send("HII gps");
 // for python output
 python_gps.on('message', (data) => { console.log(data); });
     //send_gps(data);});
-python_servos.on('message', (data) => { send_servo(data); });
+python_servos.on('message', (data) => { console.log(data); send_servo(data); });
 
 connection_main();

@@ -8,6 +8,8 @@
 
 * For rasp client:
   * npm install python-shell
+  * pyserial, GPIO
+
 
 ## Project parts
 
@@ -58,8 +60,15 @@ In the express server index.js :
   * Deal when server is down, or disconnect [Done]
 * Raspberry pi connection to server : 
   * try to connect to server automatically every 1s in case of server down or error [DONE]
+* Raspberry pi : 
+  * Connecting arduino to application
+  * Reading wind speed by arduino
+  * Test GPS with application 
+  * Path planning algorithm
 * GUI : [Priority]
-  * Define the design 
+  * Define the design
+  * Add arduino information part
+  * Path planning 
 * Server : 
   * prevent connection to remote_device while busy [DONE]
   * Inform PC when remote device is connected or not [DONE]
