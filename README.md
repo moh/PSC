@@ -40,6 +40,7 @@ Server address : ws://localhost:3000
 * From remote_device to client : 
   * Send data : {type : "send_data", data_type : A, data : {...}} depends on the data type asked by client, where A in {"*", "SERVO", "GPS", "WIND"}
   * wind data : {type : "send_data", data_type : "WIND", data : {"wind_direction" : angle, "wind_speed" : 000}}
+  * GPS data : {type : "send_data", data_type : "GPS", data : {"alt" : altitude, "lat" : latitude, "long" : longitude, "speed" : speed, "sat" : num_sats}}
  
 ## Socket information : 
 In the express server index.js : 
@@ -76,7 +77,7 @@ The program have multiple servers that each simulate an electronic device:
    * for yaw data : it is between -180 and 180 where 0 is the north and 90 is the est  
 * Simulation of servo to control the gouvernail on port 4004:
   * Send command of type "#0P1000\r" (an extreme side) to "#0P2000\r" (the other side)
-  * See the command in the file "SSC32IInterface.csv" using the command "tail -f SSC32IInterface.csv"
+  * See the command in the file "SSC32Interface.csv" using the command "tail -f SSC32Interface.csv"
 * Simulation of servo to control the voile on port 4003:
   * Send command of type "R0\r" (voile closed) to "R116000\r" (voile open to max), it supports also negative value "R-116000\r" for the other side
   * See the command in the file "IM483IInterface.csv" using the command "tail -f IM483IInterface.csv"
