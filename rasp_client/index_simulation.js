@@ -8,7 +8,7 @@ import {PythonShell} from "python-shell";
 
 // the id of the raspberry pi client
 const remote_device_id = "rasp_123";
-const server_address = "ws://169.254.41.69:3000";
+const server_address = "ws://localhost:3000";
 var socket;
 
 // var related to connection with pc
@@ -17,8 +17,9 @@ var connected_to_PC = false;
 var associated_PC = null;
 
 // var related to python script
-const python_gps = new PythonShell("python/gps.py");
-const python_servos = new PythonShell("python/servo.py")
+const python_meteo_gps = new PythonShell("python_simulation/meteo_GPS_simulation.py");
+const python_servos = new PythonShell("python_simulation/servos_simulation.py");
+const python_imu = new PythonShell("python_simulation/imu_simulation.py");
 
 
 function connection_main(){
@@ -47,9 +48,6 @@ function connection_main(){
       connected = true;
       console.log("connected to server");
       
-      //setInterval(send_gps, 500);
-      //setInterval(send_servo, 1000);
-      setInterval(send_wind, 1000);
     }
       if (data["type"] == "PC_presence") {
           if (data["answer"] == true) {
@@ -88,20 +86,6 @@ function connection_main(){
 }
 
 /**
- * Send gps data to PC 
- * data : gps data given by python file
- * */
-function send_gps(data) {
-    console.log("Hello gps");
-    if (!connected || !connected_to_PC) { return; }
-    socket.send(JSON.stringify({
-        type: "send_data",
-        data_type: "GPS",
-        data: JSON.parse(data)
-    }));
-}
-
-/**
  * Send servo information to PC
  * data : servo data given by python file
  * */
@@ -120,38 +104,35 @@ function send_servo(data) {
     
 }
 
-/*
-function send_gps(){
-  var lat = Math.random()*100;
-  var lon = Math.random()*10;
-  if(!connected || !connected_to_PC){return;}
-  socket.send(JSON.stringify({
-    type: "send_data",
-    data_type: "GPS",
-    data : {"alt" : rand_nb(), "lat" : 48.715861, "lon" : 2.211261, "speed" : rand_nb(), "sat" : rand_nb() }
-  }));
+/**
+ * Send GPS or wind data
+ * @param {*} data 
+ * @returns 
+ */
+function send_meteo_gps(data){
+    if(!connected || !connected_to_PC){return;}
+    socket.send(JSON.stringify({
+      type: "send_data",
+      data_type: "*",
+      data : JSON.parse(data)
+    }));
 }
 
-*/
 
-function send_wind(){
-  if(!connected || !connected_to_PC){return;}
-  socket.send(JSON.stringify({
-    type: "send_data",
-    data_type: "WIND",
-    data : {"wind_direction" : rand_nb(), "wind_speed" : rand_nb()}
-  }));
+function send_imu(data){
+    if(!connected || !connected_to_PC){return;}
+    socket.send(JSON.stringify({
+      type: "send_data",
+      data_type: "IMU",
+      data : JSON.parse(data)
+    }));
 }
 
-// a test function 
-function rand_nb(){
-  return Math.floor(Math.random() * 100);
-}
 
-python_gps.send("HII gps");
 // for python output
-python_gps.on('message', (data) => { console.log(data); });
-    //send_gps(data);});
-python_servos.on('message', (data) => { console.log(data); send_servo(data); });
+python_meteo_gps.on('message', (data) => { console.log("Meteo GPS"); send_meteo_gps(data); });
+//send_gps(data);});
+python_servos.on('message', (data) => { console.log("Servos"); send_servo(data); });
+// python_imu.on('message', (data) => {console.log("IMU"); send_imu(data); }); 
 
 connection_main();

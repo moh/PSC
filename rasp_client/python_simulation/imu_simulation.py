@@ -9,4 +9,4 @@ imu = Simulation(host, 4007, "YPR")
 while True:
     answer_data = imu.read_YPR()
     print(json.dumps(answer_data))
-    time.sleep(0.1)
+    time.sleep(0.5)

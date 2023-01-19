@@ -80,7 +80,7 @@ function process_server_answer(data){
         if (data["data_type"] == "*"){
             update_gps_data(data["data"]);
             update_servo_data(data["data"]);
-            update_gps_data(data["data"]);
+            update_wind_direction(data["data"]);
         }
 
     }

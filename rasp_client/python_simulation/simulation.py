@@ -39,7 +39,7 @@ class Simulation:
     def parse_gps_data(self, data):
         gps_data = pynmea2.parse(data)
         return {"alt" : gps_data.altitude, "lat" : gps_data.latitude, 
-                "long" : gps_data.longitude, "speed" : 0, "sat" : gps_data.num_sats}
+                "lon" : gps_data.longitude, "speed" : 0, "sat" : gps_data.num_sats}
     
 
     def parse_wind_data(self, data):
