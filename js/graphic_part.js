@@ -13,9 +13,12 @@ var angle_wind = 0;
 // yaw is the rotation angle along z axis (by magnetometer)
 var angle_yaw = 0;
 var ctx_yaw;
-// roll is the rotation angle along y axis (gyroscope and accelerometer)
+// roll is the rotation angle along x axis (gyroscope and accelerometer)
 var angle_roll = 0; 
 var ctx_roll;
+// pitch is the rotation angle along y axis (gyroscope and accelerometer)
+var angle_pitch = 0
+var ctx_pitch = 0
 
 /**
  * initiate wind and servo and angle direction figures
@@ -25,6 +28,7 @@ function initiate_figures(){
     initiate_wind_direction();
     initiate_angle_direction_yaw();
     initiate_angle_direction_roll();
+    initiate_angle_direction_pitch();
     // initialise yaw to 0
     rotate_direction_yaw(0);
 }
@@ -87,6 +91,20 @@ function initiate_angle_direction_roll() {
     ctx_roll.translate(centerX, centerY);
 }
 
+/**
+ * Function that initiate pitch angle direction
+ */
+function initiate_angle_direction_pitch() {
+    var canvas;
+    canvas = document.getElementById("canvas_pitch");
+    centerX = canvas.width/2;
+    centerY = canvas.height/2;
+    ctx_pitch = canvas.getContext('2d');
+    ctx_pitch.fillStyle = 'black';
+    ctx_pitch.fillRect(centerX, centerY, 25, 2);
+    ctx_pitch.translate(centerX, centerY);
+}
+
 
 /**
  * Rotate the servo with angle in respect to x axis
@@ -115,6 +133,11 @@ function rotate_wind_direction(angle){
     document.querySelector("input[name='wind_direction']").value = angle;
 }
 
+// ------------------
+// IMU rotate part 
+// ------------------
+
+
 /**
  * Rotate the roll with angle in respect to x axis 
  * @param {*} angle the angle
@@ -124,6 +147,18 @@ function rotate_direction_roll(angle) {
     angle_roll = angle;
     document.querySelector("input[name='roll_angle']").value = angle;
 }
+
+/**
+ * Rotate the pitch with angle in respect to x axis
+ * @param {*} angle : new pitch angle  
+ */
+function rotate_direction_pitch(angle){
+    rotate_figure(angle - angle_pitch, ctx_pitch);
+    angle_pitch = angle;
+    document.querySelector("input[name='pitch_angle']").value = angle;
+}
+
+
 
 
 /**
@@ -136,6 +171,10 @@ function rotate_direction_yaw(angle) {
     angle_yaw = n_angle;
     document.querySelector("input[name='yaw_angle']").value = angle;
 }
+
+
+
+
 
 
 /**

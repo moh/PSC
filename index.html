@@ -3,14 +3,30 @@
   <head>
     <meta charset="UTF-8" />
     <title>Voilier</title> 
-    <link rel="stylesheet" href="css/index.css"> 
+    <link rel="stylesheet" href="css/index.css" /> 
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+     integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="
+     crossorigin=""/>
+     <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
+     integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="
+     crossorigin=""></script>
 
     <script src="js/main.js"></script>
-    <script src="js/map.js"></script>
     <script src="js/main_connection.js"></script>
     <script src="js/graphic_part.js"></script>
     <script src="node_modules/ws/index.js"></script>
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <!-- For leaflet map, should come after its css -->
+    
+    
+    
+    <!-- <script src="js/map.js"></script> -->
+
+    <!-- <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    
+    
+    -->
+
 
   </head>
   <body>
@@ -85,13 +101,19 @@
               <h3>Boat data</h3>
 
               <div class="rotation_info">
-                  <p> Roll (y): </p>
+                  <p> Roll (x) &nbsp;&nbsp;: </p>
                   <canvas id="canvas_roll" height="50" width="50"></canvas>
                   <input type="number" name="roll_angle" min="0" max="360" readonly />
               </div>
 
               <div class="rotation_info">
-                  <p> Yaw (z): </p>
+                  <p> Pitch (y) : </p>
+                  <canvas id="canvas_pitch" height="50" width="50"></canvas>
+                  <input type="number" name="pitch_angle" min="0" max="360" readonly />
+            </div>
+
+              <div class="rotation_info">
+                  <p> Yaw (z) &nbsp;: </p>
                   <canvas id="canvas_yaw" height="50" width="50"></canvas>
                   <input type="number" name="yaw_angle" min="0" max="360" readonly />
               </div>
@@ -139,8 +161,6 @@
           <button id = "send_target">Send target</button>
         </div>
         <div id = "map">
-          <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB41DRUbKWJHPxaFjMAwdrzWzbVKartNGg&callback=initMap&v=weekly"
-        defer></script>
         </div>
   
 

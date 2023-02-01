@@ -130,9 +130,22 @@ function send_imu(data){
 
 
 // for python output
-python_meteo_gps.on('message', (data) => { console.log("Meteo GPS"); send_meteo_gps(data); });
+python_meteo_gps.on('message', (data) => {
+  if (connected_to_PC){
+    console.log("Meteo GPS"); send_meteo_gps(data); 
+  }
+});
 //send_gps(data);});
-python_servos.on('message', (data) => { console.log("Servos"); send_servo(data); });
-// python_imu.on('message', (data) => {console.log("IMU"); send_imu(data); }); 
+python_servos.on('message', (data) => {
+  if (connected_to_PC){ 
+    console.log("Servos"); send_servo(data); 
+  }
+});
+// send imu data
+python_imu.on('message', (data) => {
+  if (connected_to_PC){
+    console.log("IMU"); send_imu(data); 
+  }
+}); 
 
 connection_main();

@@ -1,5 +1,6 @@
 from simulation import Simulation
 import json
+import sys
 
 host = "127.0.0.1"
 
@@ -19,6 +20,8 @@ while True:
         voile_angle = voile.send_to_servo_voile(int(data["servo_1"]))
         gouvernail_angle = gouvernail.send_to_servo_gouvernail(int(data["servo_3"]))
     except Exception as e:
-        pass
+        voile_angle = -1
+        gouvernail_angle = -1
     answer_data = {"servo_1" : voile_angle, "servo_2" : 0, "servo_3" : gouvernail_angle}
     print(json.dumps(answer_data))
+    sys.stdout.flush()

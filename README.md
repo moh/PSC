@@ -82,6 +82,10 @@ The program have multiple servers that each simulate an electronic device:
   * Send command of type "R0\r" (voile closed) to "R116000\r" (voile open to max), it supports also negative value "R-116000\r" for the other side
   * See the command in the file "IM483IInterface.csv" using the command "tail -f IM483IInterface.csv"
    
+## Problems 
+
+* Problem 1: javascript not reading every time the python print when there is a while true in python: 
+  * Solution : use "sys.stdout.flush()" after print in python
 
 
 ## Planning :
@@ -98,12 +102,16 @@ The program have multiple servers that each simulate an electronic device:
   * Test GPS with application 
   * Path planning algorithm
 * GUI : [Priority]
-  * Define the design
-  * Add arduino information part
+  * Define the design [DONE]
+  * Add arduino information part [DONE]
+  * Add map and functionalities
   * Path planning 
 * Server : 
   * prevent connection to remote_device while busy [DONE]
   * Inform PC when remote device is connected or not [DONE]
   * Route messages [DONE]
+* Simulation :
+  * Integrate simulation with rasp_client [DONE]
+
 * Organisation :
   * Define a format for data 

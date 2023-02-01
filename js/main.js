@@ -62,27 +62,33 @@ function process_server_answer(data){
             change_remote_device_connection(false, data["remote_device_id"]);
         }
     }
-    // answer about GPS data
+    // answer about sensors and servo motors 
     // type : "send_data", data_type
     else if(data["type"] == "send_data"){
+        
+        // GPS data
         if (data["data_type"] == "GPS"){
             update_gps_data(data["data"]);
         }
-
-        if (data["data_type"] == "SERVO"){
+        // SERVO data
+        else if (data["data_type"] == "SERVO"){
             update_servo_data(data["data"]);
         }
-
-        if (data["data_type"] == "WIND"){
+        // WIND data
+        else if (data["data_type"] == "WIND"){
             update_wind_direction(data["data"]);
         }
-
-        if (data["data_type"] == "*"){
+        // IMU data
+        else if (data["data_type"] == "IMU"){
+            update_imu_data(data["data"]);
+        }
+        // All type of data 
+        else if (data["data_type"] == "*"){
             update_gps_data(data["data"]);
             update_servo_data(data["data"]);
             update_wind_direction(data["data"]);
+            update_imu_data(data["data"]);
         }
-
     }
 }
 
@@ -197,6 +203,29 @@ function update_gps_data(data){
 }
 
 // -----------------------
+// About IMU part 
+// -----------------------
+
+/**
+ * update imu angles 
+ * @param {*} data : the imu anglees 
+ */
+function update_imu_data(data){
+    for(info in data){
+        if (info.includes("roll")){
+            rotate_direction_roll(data[info]);
+        }
+        else if (info.includes("pitch")){
+            rotate_direction_pitch(data[info]);
+        }
+        else if (info.includes("yaw")){
+            rotate_direction_yaw(data[info]);
+        }
+    }
+}
+
+
+// -----------------------
 // update servo and wind direction data
 // -----------------------
 
@@ -225,27 +254,28 @@ function update_wind_direction(data){
 }
 
 
-// Test function 
-function test_send(){
-    socket.send(JSON.stringify({
-        type : "command",
-        data : { servo_1 : 120, servo_2 : 90, servo_3 : 100}
-    }));
-    console.log("Testing command ... ");
-}
 
 function main(){
     document.getElementById("connect_button").addEventListener("click", connect_server);
     document.getElementById("servo_change_button").addEventListener("click", send_servo_values);
     
     // map buttons 
-    document.getElementById("map_center").addEventListener("click", map_center);
-    document.getElementById("add_location").addEventListener("click", map_add_location);
-    document.getElementById("remove_location").addEventListener("click", map_remove_location);
-    document.getElementById("send_target").addEventListener("click", send_target);
+    // document.getElementById("map_center").addEventListener("click", map_center);
+    // document.getElementById("add_location").addEventListener("click", map_add_location);
+    // document.getElementById("remove_location").addEventListener("click", map_remove_location);
+    // document.getElementById("send_target").addEventListener("click", send_target);
 
     initiate_figures();
     initiate_servo_input();
     // Test part
     // document.getElementById("test_send_button").addEventListener("click", test_send);
+    var map = L.map('map',{
+        center: [48.715861, 2.211261],
+        zoom:13
+    });
+    
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
 }
