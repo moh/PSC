@@ -45,7 +45,7 @@ function connect_server(){
  */
 function process_server_answer(data){
     data = JSON.parse(data);
-    console.log(data);
+    // console.log(data);
     if (data["type"] == "connect"){
         if (data["answer"] == "accepted"){
             change_connection_state(true);
@@ -77,6 +77,7 @@ function process_server_answer(data){
         // WIND data
         else if (data["data_type"] == "WIND"){
             update_wind_direction(data["data"]);
+            update_wind_speed(data["data"]);
         }
         // IMU data
         else if (data["data_type"] == "IMU"){
@@ -88,6 +89,7 @@ function process_server_answer(data){
             update_servo_data(data["data"]);
             update_wind_direction(data["data"]);
             update_imu_data(data["data"]);
+            update_wind_speed(data["data"]);
         }
     }
 }
@@ -200,6 +202,8 @@ function update_gps_data(data){
         el.innerHTML = data[info];
        } 
     }
+    // update boat market in map
+    update_marker();
 }
 
 // -----------------------
@@ -222,6 +226,8 @@ function update_imu_data(data){
             rotate_direction_yaw(data[info]);
         }
     }
+    // update boat marker in map
+    // update_marker();
 }
 
 
@@ -253,29 +259,35 @@ function update_wind_direction(data){
     }
 }
 
+/**
+ * update wind speed from data
+ * @param {*} data 
+ */
+function update_wind_speed(data){
+    ele = document.getElementById("wind_speed");
+    for(info in data){
+        if (info == "wind_speed"){
+            ele.value = data["wind_speed"];
+        }
+    }
+}
+
 
 
 function main(){
     document.getElementById("connect_button").addEventListener("click", connect_server);
     document.getElementById("servo_change_button").addEventListener("click", send_servo_values);
     
-    // map buttons 
-    // document.getElementById("map_center").addEventListener("click", map_center);
+    // map part and buttons 
+    initMap();
+    document.getElementById("map_center").addEventListener("click", map_center);
     // document.getElementById("add_location").addEventListener("click", map_add_location);
     // document.getElementById("remove_location").addEventListener("click", map_remove_location);
-    // document.getElementById("send_target").addEventListener("click", send_target);
+    document.getElementById("send_target").addEventListener("click", send_target);
 
     initiate_figures();
     initiate_servo_input();
     // Test part
     // document.getElementById("test_send_button").addEventListener("click", test_send);
-    var map = L.map('map',{
-        center: [48.715861, 2.211261],
-        zoom:13
-    });
     
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-    }).addTo(map);
 }

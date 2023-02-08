@@ -11,4 +11,4 @@ while True:
     answer_data = imu.read_YPR()
     print(json.dumps(answer_data))
     sys.stdout.flush()
-    time.sleep(0.5)
+    

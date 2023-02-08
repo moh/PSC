@@ -123,6 +123,19 @@ body{
     width : 40px;
 }
 
+#remote_device_part #remote_device_info_right .wind_speed{
+  margin-top: 40px;
+}
+
+#remote_device_part #remote_device_info_right .wind_speed p{
+  display: inline;
+  width: fit-content;
+}
+
+#remote_device_part #remote_device_info_right .wind_speed input{
+  width : 60px
+}
+
 
 
 #remote_device_part #remote_device_info_servos{
@@ -214,3 +227,7 @@ body{
   width: 100%;
 }
 
+
+#map_part #map .boatIcon{
+  transform-origin: center center 0px;
+}

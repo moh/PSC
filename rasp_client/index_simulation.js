@@ -4,7 +4,7 @@
 import { RSA_X931_PADDING } from "constants";
 import { WebSocket } from "ws";
 //import {spawn} from "child_process";
-import {PythonShell} from "python-shell";
+import {PythonShell, PythonShellError} from "python-shell";
 
 // the id of the raspberry pi client
 const remote_device_id = "rasp_123";
@@ -16,11 +16,14 @@ var connected = false;
 var connected_to_PC = false;
 var associated_PC = null;
 
+// related to navigation algorithm
+var navigation_enabled = false;
+
 // var related to python script
 const python_meteo_gps = new PythonShell("python_simulation/meteo_GPS_simulation.py");
 const python_servos = new PythonShell("python_simulation/servos_simulation.py");
 const python_imu = new PythonShell("python_simulation/imu_simulation.py");
-
+const python_navigation = new PythonShell("python_simulation/navigation_simulation.py");
 
 function connection_main(){
   console.log("trying to connect ...");
@@ -42,8 +45,8 @@ function connection_main(){
   socket.addEventListener("message", ({ data }) => {
     data = JSON.parse(data);
     // print data 
-    console.log("data =   ");
-    console.log(data);
+    // console.log("data =   ");
+    // console.log(data);
     if((data["type"] == "connect") && (data["answer"] == "accepted")){
       connected = true;
       console.log("connected to server");
@@ -59,6 +62,11 @@ function connection_main(){
       else if (data["type"] == "command") {
           python_servos.send(JSON.stringify(data["data"]));
           
+      }
+
+      else if (data["type"] == "target"){
+        console.log("Target received ");
+        navigation_enabled = !navigation_enabled;
       }
   });
 
@@ -76,7 +84,6 @@ function connection_main(){
 
 
   socket.onerror = function (error){
-    console.log("test");
     connected_to_PC = false;
     if(!connected){
       console.log("error ... ");
@@ -111,6 +118,11 @@ function send_servo(data) {
  */
 function send_meteo_gps(data){
     if(!connected || !connected_to_PC){return;}
+    // send to navigation algorithm
+    if(navigation_enabled){
+      python_navigation.send(data);
+    }
+    // send to GUI 
     socket.send(JSON.stringify({
       type: "send_data",
       data_type: "*",
@@ -119,8 +131,18 @@ function send_meteo_gps(data){
 }
 
 
+/**
+ * Send imu data 
+ * @param {*} data 
+ * @returns 
+ */
 function send_imu(data){
     if(!connected || !connected_to_PC){return;}
+    // send to navigation algorithm
+    if (navigation_enabled){
+      python_navigation.send(data);
+    }
+    // send to GUI
     socket.send(JSON.stringify({
       type: "send_data",
       data_type: "IMU",
@@ -129,23 +151,45 @@ function send_imu(data){
 }
 
 
+
+/**
+ * data produced by navigation algorithm
+ * @param {*} data data of servos
+ */
+function navigation_command(data){
+  python_servos.send(data);
+}
+
+
 // for python output
+
 python_meteo_gps.on('message', (data) => {
   if (connected_to_PC){
-    console.log("Meteo GPS"); send_meteo_gps(data); 
+    console.log("Meteo GPS"); 
+    send_meteo_gps(data); 
   }
 });
+
 //send_gps(data);});
 python_servos.on('message', (data) => {
   if (connected_to_PC){ 
-    console.log("Servos"); send_servo(data); 
+    console.log("Servos"); 
+    send_servo(data); 
   }
 });
 // send imu data
 python_imu.on('message', (data) => {
   if (connected_to_PC){
-    console.log("IMU"); send_imu(data); 
+    console.log("IMU"); 
+    send_imu(data); 
   }
 }); 
+
+python_navigation.on('message', (data) => {
+  if (connected_to_PC){
+    console.log("navigation");
+    navigation_command(data);
+  }
+});
 
 connection_main();

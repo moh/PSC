@@ -12,6 +12,8 @@
      integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="
      crossorigin=""></script>
 
+    <script src = "js/map.js"></script>
+
     <script src="js/main.js"></script>
     <script src="js/main_connection.js"></script>
     <script src="js/graphic_part.js"></script>
@@ -110,12 +112,18 @@
                   <p> Pitch (y) : </p>
                   <canvas id="canvas_pitch" height="50" width="50"></canvas>
                   <input type="number" name="pitch_angle" min="0" max="360" readonly />
-            </div>
+              </div>
 
               <div class="rotation_info">
                   <p> Yaw (z) &nbsp;: </p>
                   <canvas id="canvas_yaw" height="50" width="50"></canvas>
                   <input type="number" name="yaw_angle" min="0" max="360" readonly />
+              </div>
+
+              <div class="wind_speed">
+                <p>Wind speed : </p>
+                <input type="number" name = "wind_speed" id = "wind_speed" readonly />
+                <p> m/s</p>
               </div>
 
             </div>

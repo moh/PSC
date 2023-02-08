@@ -3,27 +3,74 @@ var add_target = false;
 var remove_target = false;
 var target_added = false;
 var target = null;
+var boat_marker = null;
+var boat_marker_object = null;
+// last location of the boat 
+var last_location = null;
+// The location of map at the start 
+const uluru = { lat: 48.715861, lng: 2.211261 };
+
+
+var boatIcon = L.icon({
+  iconUrl : "img/boat.png",
+  
+  iconSize : [40, 40],
+  iconAnchor : [20,20],
+  className : "boatIcon"
+});
 
 // Initialize and add the map
 function initMap() {
-  console.log("Hello");
-  // The location of Uluru
-  const uluru = { lat: 48.715861, lng: 2.211261 };
+
   // The map, centered at Uluru
-  var map = L.map('map').setView([uluru["lat"], uluru["lng"]], 13);
-  //marker.addListener('click', test_mark);
-  map.addListener('click', map_clicked);
+  map = L.map('map',{
+    center: [uluru["lat"], uluru["lng"]],
+    zoom:13
+  });
+
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  maxZoom: 19,
+  attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+  }).addTo(map);
+  boat_marker = L.marker([uluru["lat"], uluru["lng"]], {icon: boatIcon}).addTo(map);
+  // select boat marker html
+  boat_marker_object = document.getElementsByClassName("boatIcon")[0];
 }
+
+
+/**
+ * update the marker position and angle in the map 
+ */
+function update_marker(){
+  
+  lat = document.querySelector('[data-gps="lat"]').dataset.value;
+  lng = document.querySelector('[data-gps="lon"]').dataset.value;
+  yaw = document.querySelector('[name="yaw_angle"]').value;
+  if(lat == 0){lat = uluru["lat"];}
+  if(lng == 0){lng = uluru["lng"];}
+  
+  var newLatLng = new L.LatLng(lat, lng);
+  boat_marker.setLatLng(newLatLng);
+  boat_marker_object.style.transform += " rotate(" + yaw + "deg)";
+
+  if (last_location != null){
+    l = [last_location, [lat, lng]]
+    var polyline = L.polyline(l, {color: 'red'}).addTo(map);
+  }
+  last_location = [lat, lng];
+
+}
+
+
 
 /**
  * recenter the map to the position of the remote device 
  */
 function map_center(){
-  lat = document.querySelector('[data-gps="lat"]').dataset.value;
-  lon = document.querySelector('[data-gps="lon"]').dataset.value;
-  if (lat != 0 && lon != 0){
-    map.setCenter({lat : parseFloat(lat), lng : parseFloat(lon)});
-    map.setZoom(16);
+  lat = last_location[0];
+  lng = last_location[1];
+  if (lat != 0 && lng != 0){
+    map.setView(new L.LatLng(lat, lng), 13);
   }
 }
 
@@ -52,14 +99,15 @@ function map_remove_location(){
  */
 function send_target(){
   console.log("send target");
+  /*
   if (target == null) {
     return;
   }
   console.log(target);
-
+  */
   socket.send(JSON.stringify({
     type : "target",
-    target : {lat : target.position.lat(), lng : target.position.lng()}
+    target : {lat : 0, lng : 0}// {lat : target.position.lat(), lng : target.position.lng()}
   }));
 }
 
@@ -77,6 +125,3 @@ function map_clicked(ele){
     add_target = false;
   }
 }
-
-
-window.initMap = initMap;

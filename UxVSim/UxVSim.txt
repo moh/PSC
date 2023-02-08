@@ -29,7 +29,7 @@
 % theta (yaw in rad)
 1.2
 % v (speed in m/s)
-0.5
+5
 % omega (yaw rate of turn in rad/s)
 -0.025
 % phi (roll in rad)
@@ -79,24 +79,24 @@
 % deltavmaxreal (max equivalent opening angle of the real sail in rad)
 1.20
 % V_med (wind speed in m/s)
-6.0
+16.0
 %7.5
 % V_var (wind speed max variation in m/s)
 1.0
 %0
 % psi_med (wind direction in rad)
-4.71
+1.57
 % psi_var (wind direction max variation in rad)
-0.39
+0.15
 %0
 % beta (current due to the wind, in fraction of the wind speed)
-0.01
+0.00
 %0
 % Vc_med (current speed in m/s)
-1
+0
 %0
 % Vc_var (current speed max variation in m/s)
-1
+0
 %0
 % psic_med (current direction in rad)
 -1.5
@@ -104,11 +104,11 @@
 0.39
 %0
 % hw_var (amplitude of the waves in m)
-1.0
+0.0
 %0
 % gps_error (GPS error in m)
-0.25
+0.0
 %0
 % mt_error (mt error in rad)
-0.05
+0.00
 %0
