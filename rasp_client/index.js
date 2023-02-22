@@ -8,7 +8,7 @@ import {PythonShell} from "python-shell";
 
 // the id of the raspberry pi client
 const remote_device_id = "rasp_123";
-const server_address = "ws://169.254.41.69:3000";
+const server_address = "ws://localhost:3000";
 var socket;
 
 // var related to connection with pc
