@@ -218,6 +218,27 @@ body{
   cursor: pointer;
 }
 
+#map_part #activate_navigation{
+  color: black;
+  border: 2px solid grey;
+  width: 100px;
+  height: 35px;
+  transform: translateY(-19px);
+}
+
+#map_part #activate_navigation:hover{
+  background-color: gainsboro;
+  cursor: pointer;
+}
+
+#map_part .navigation_activated{
+  background-color: lightgray;
+}
+
+#map_part .navigation_desactivated{
+  background-color: white;
+}
+
 #map_part #map_buttons{
   margin-bottom: 10px;
 }

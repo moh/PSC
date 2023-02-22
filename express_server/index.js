@@ -38,7 +38,7 @@ function analyse_message(socket, data){
   var type = data["type"];
   if (type == "connect"){
     deal_connection(socket, data);
-  } else if (type == "command" || type == "target"){
+  } else if (type == "command" || type == "target" || type == "navigation"){
     send_command(socket, data);
   } else{
     route_message(socket, data);

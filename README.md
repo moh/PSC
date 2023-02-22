@@ -113,5 +113,8 @@ The program have multiple servers that each simulate an electronic device:
 * Simulation :
   * Integrate simulation with rasp_client [DONE]
 
+* Navigation : 
+  * Activate and desactivate navigation
+
 * Organisation :
   * Define a format for data 

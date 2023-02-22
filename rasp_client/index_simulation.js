@@ -44,9 +44,7 @@ function connection_main(){
   // receive a message from the server
   socket.addEventListener("message", ({ data }) => {
     data = JSON.parse(data);
-    // print data 
-    // console.log("data =   ");
-    // console.log(data);
+   
     if((data["type"] == "connect") && (data["answer"] == "accepted")){
       connected = true;
       console.log("connected to server");
@@ -64,9 +62,17 @@ function connection_main(){
           
       }
 
-      else if (data["type"] == "target"){
-        console.log("Target received ");
+      else if (data["type"] == "navigation"){
+        console.log("navigation received ");
         navigation_enabled = !navigation_enabled;
+
+        // send current navigation state to the client
+        socket.send(JSON.stringify({
+          type: "send_data",
+          data_type: "navigation_status",
+          data: navigation_enabled
+        }));
+
       }
   });
 
@@ -97,8 +103,6 @@ function connection_main(){
  * data : servo data given by python file
  * */
 function send_servo(data) {
-    console.log("HELLOOO ");
-    console.log(data);
     // parse data from python
     
     if (!connected || !connected_to_PC) { return; }
@@ -165,7 +169,7 @@ function navigation_command(data){
 
 python_meteo_gps.on('message', (data) => {
   if (connected_to_PC){
-    console.log("Meteo GPS"); 
+    // console.log("Meteo GPS"); 
     send_meteo_gps(data); 
   }
 });
@@ -173,21 +177,21 @@ python_meteo_gps.on('message', (data) => {
 //send_gps(data);});
 python_servos.on('message', (data) => {
   if (connected_to_PC){ 
-    console.log("Servos"); 
+    // console.log("Servos"); 
     send_servo(data); 
   }
 });
 // send imu data
 python_imu.on('message', (data) => {
   if (connected_to_PC){
-    console.log("IMU"); 
+    // console.log("IMU"); 
     send_imu(data); 
   }
 }); 
 
 python_navigation.on('message', (data) => {
   if (connected_to_PC){
-    console.log("navigation");
+    // console.log("navigation");
     navigation_command(data);
   }
 });

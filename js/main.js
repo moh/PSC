@@ -91,6 +91,13 @@ function process_server_answer(data){
             update_imu_data(data["data"]);
             update_wind_speed(data["data"]);
         }
+
+        // navigation status data 
+        else if (data["data_type"] == "navigation_status"){
+            console.log("navigation status ! ");
+            console.log(data);
+            update_navigation_button(data["data"]);
+        }
     }
 }
 
@@ -226,8 +233,7 @@ function update_imu_data(data){
             rotate_direction_yaw(data[info]);
         }
     }
-    // update boat marker in map
-    // update_marker();
+    
 }
 
 
@@ -272,6 +278,27 @@ function update_wind_speed(data){
     }
 }
 
+/**
+ * Send activate navigation to the raspberry
+ */
+function send_activate_navigation(ele){
+    console.log("activate navigation");
+    
+    socket.send(JSON.stringify({
+      type : "navigation"
+    }));
+  }
+
+function update_navigation_button(navigation_enabled){
+    button = document.getElementById("activate_navigation");
+    if (navigation_enabled){
+        button.classList =  ["navigation_activated"];
+    } else{
+        button.classList =  ["navigation_desactivated"];
+    }
+    
+
+}
 
 
 function main(){
@@ -284,6 +311,7 @@ function main(){
     // document.getElementById("add_location").addEventListener("click", map_add_location);
     // document.getElementById("remove_location").addEventListener("click", map_remove_location);
     document.getElementById("send_target").addEventListener("click", send_target);
+    document.getElementById("activate_navigation").addEventListener("click", send_activate_navigation);
 
     initiate_figures();
     initiate_servo_input();

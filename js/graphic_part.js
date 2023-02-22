@@ -114,7 +114,7 @@ function initiate_angle_direction_pitch() {
 function rotate_servo(servo, angle){
     var i = servo[servo.length - 1] - 1;
     var inp_servo = document.querySelector("input[name='" + servo + "']");
-    rotate_figure(angle - angle_servos[i], ctx_servos[i]);
+    rotate_figure(angle_servos[i] - angle, ctx_servos[i]);
     angle_servos[i] = angle;
 
     // modify the value if the input is not selected by user
