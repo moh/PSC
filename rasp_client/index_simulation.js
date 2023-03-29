@@ -16,6 +16,7 @@ var connected = false;
 var connected_to_PC = false;
 var associated_PC = null;
 
+
 // related to navigation algorithm
 var navigation_enabled = false;
 
@@ -73,6 +74,10 @@ function connection_main(){
           data: navigation_enabled
         }));
 
+      }
+
+      else if (data["type"] == "target"){
+        python_navigation.send(JSON.stringify(data));
       }
   });
 
@@ -191,7 +196,8 @@ python_imu.on('message', (data) => {
 
 python_navigation.on('message', (data) => {
   if (connected_to_PC){
-    // console.log("navigation");
+    console.log("navigation : ");
+    console.log(data);
     navigation_command(data);
   }
 });

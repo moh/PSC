@@ -308,8 +308,8 @@ function main(){
     // map part and buttons 
     initMap();
     document.getElementById("map_center").addEventListener("click", map_center);
-    // document.getElementById("add_location").addEventListener("click", map_add_location);
-    // document.getElementById("remove_location").addEventListener("click", map_remove_location);
+    document.getElementById("add_location").addEventListener("click", map_add_location);
+    document.getElementById("remove_location").addEventListener("click", map_remove_location);
     document.getElementById("send_target").addEventListener("click", send_target);
     document.getElementById("activate_navigation").addEventListener("click", send_activate_navigation);
 

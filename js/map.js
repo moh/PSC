@@ -35,6 +35,9 @@ function initMap() {
   boat_marker = L.marker([uluru["lat"], uluru["lng"]], {icon: boatIcon}).addTo(map);
   // select boat marker html
   boat_marker_object = document.getElementsByClassName("boatIcon")[0];
+
+  // map is clicked 
+  map.on("click", map_clicked);
 }
 
 
@@ -89,7 +92,7 @@ function map_add_location(){
  */
 function map_remove_location(){
   if(target != null){
-    target.setMap(null);
+    map.removeLayer(target);
   }
   target = null;
 }
@@ -99,15 +102,16 @@ function map_remove_location(){
  */
 function send_target(){
   console.log("send target");
-  /*
+  
   if (target == null) {
     return;
   }
+  if (!connected || !remote_device_connected) return;
   console.log(target);
-  */
+  
   socket.send(JSON.stringify({
     type : "target",
-    target : {lat : 0, lng : 0}// {lat : target.position.lat(), lng : target.position.lng()}
+    target : {lat : target._latlng.lat, lng : target._latlng.lng}
   }));
 }
 
@@ -118,10 +122,8 @@ function send_target(){
  */
 function map_clicked(ele){
   if (add_target && (target == null)){
-    target = new google.maps.Marker({
-      position: {lat:ele.latLng.lat(), lng : ele.latLng.lng()},
-      map: map,
-    });
+    target = new L.marker(ele.latlng).addTo(map);
+
     add_target = false;
   }
 }
