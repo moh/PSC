@@ -29,6 +29,7 @@ MIN_DIST_TARGET = 3
 # file = open("output.txt", "a")
 
 DESIRED_ANGLE = 20
+LIMIT_WIND_BOAT_ANGLE = 40
 previous_yaw = 0
 
 """
@@ -79,12 +80,13 @@ def algo3():
     global last_pos, last_time, velocity
     target = data_fields["target"]
     if(target == None):
-        return (-1, 0)
+        return (-1, 0, 0)
     if((data_fields["lat"] == None) or (data_fields["lon"] == None)):
-        return (-1, 0)
+        return (-1, 0, 0)
     
     x_target, y_target = utm.from_latlon(target["lat"], target["lng"])[0:2]
     x_boat, y_boat = utm.from_latlon(data_fields["lat"], data_fields["lon"])[0:2]
+    
     
     # distance between boat and target 
     dist_boat_target = ((x_target - x_boat)**2 + (y_target - y_boat)**2)**0.5
@@ -103,9 +105,13 @@ def algo3():
     angle_boat_target = math.atan2(y_target - y_boat, x_target - x_boat)*180/math.pi
 
     gouvernail_angle = ((90 - data_fields["yaw"]) - angle_boat_target) % 360
+    
+    angle_dest_wind = (data_fields["wind_direction"] - 90) - angle_boat_target - 180
+
+    
     if(gouvernail_angle > 180): gouvernail_angle = gouvernail_angle - 360
     data_fields["servo_3"] = gouvernail_angle
-    return (gouvernail_angle, velocity)
+    return (gouvernail_angle, velocity, angle_dest_wind)
     
     
     
@@ -128,11 +134,11 @@ while True:
     # voile_angle = algo1(data_fields["wind_direction"], data_fields["yaw"])
     # gouvernail_angle = algo2(data_fields["yaw"])
     # txt = "wind_direction = " + data_fields["wind_direction"] + "  yaw = " + data
-    gouvernail_angle, velocity = algo3()
+    gouvernail_angle, velocity, angle_dest_wind = algo3()
     voile_angle = algo1()
 
     answer_data = {"servo_1" : voile_angle, "servo_2" : 0, 
-                   "servo_3" : gouvernail_angle, "target" : velocity}
+                   "servo_3" : gouvernail_angle, "speed" : velocity, "dst_wind" : angle_dest_wind}
     
     print(json.dumps(answer_data))
     sys.stdout.flush()

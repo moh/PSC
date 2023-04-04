@@ -26,6 +26,10 @@ const python_servos = new PythonShell("python_simulation/servos_simulation.py");
 const python_imu = new PythonShell("python_simulation/imu_simulation.py");
 const python_navigation = new PythonShell("python_simulation/navigation_simulation.py");
 
+
+// var to indicate speed
+var speed = 0;
+
 function connection_main(){
   console.log("trying to connect ...");
   socket = new WebSocket(server_address);
@@ -131,11 +135,15 @@ function send_meteo_gps(data){
     if(navigation_enabled){
       python_navigation.send(data);
     }
+    var new_data = JSON.parse(data);
+    new_data["speed"] = speed;
+    console.log("new data = ");
+    console.log(new_data);
     // send to GUI 
     socket.send(JSON.stringify({
       type: "send_data",
       data_type: "*",
-      data : JSON.parse(data)
+      data : new_data
     }));
 }
 
@@ -198,6 +206,9 @@ python_navigation.on('message', (data) => {
   if (connected_to_PC){
     console.log("navigation : ");
     console.log(data);
+    // test speed
+    speed = JSON.parse(data)["speed"];
+    //
     navigation_command(data);
   }
 });
