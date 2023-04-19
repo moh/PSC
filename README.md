@@ -86,6 +86,14 @@ The program have multiple servers that each simulate an electronic device:
 
 * Problem 1: javascript not reading every time the python print when there is a while true in python: 
   * Solution : use "sys.stdout.flush()" after print in python
+* Problem 2: to connect to arduino in python, we should get the port name 
+
+
+## Connecting to raspberry pi 
+Connect via Ethernet cable using "VNC Viewer".
+Fixed IP Adress : 196.254.81.248
+Password : raspberrypsc
+
 
 
 ## Planning :
