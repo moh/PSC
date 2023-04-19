@@ -98,49 +98,59 @@ def algo3():
         last_time = t
     
     if (dist_boat_target <= MIN_DIST_TARGET):
-        return ("d : " + str(dist_boat_target), velocity)
+        return ("d : " + str(dist_boat_target), velocity, 0)
     
 
     # angle between x axis and (boat, target) when distance is small compared to earth deformation
     angle_boat_target = math.atan2(y_target - y_boat, x_target - x_boat)*180/math.pi
 
-    gouvernail_angle = ((90 - data_fields["yaw"]) - angle_boat_target) % 360
+    gouvernail_angle = ((90 - float(data_fields["yaw"])) - angle_boat_target) % 360
     
-    angle_dest_wind = (data_fields["wind_direction"] - 90) - angle_boat_target - 180
-
+    # it is equal to 0 if it faces the wind, and 180 if same direction as the wind
+    angle_dest_wind = 360 - float(data_fields["wind_direction"])  - float(data_fields["yaw"])
     
     if(gouvernail_angle > 180): gouvernail_angle = gouvernail_angle - 360
     data_fields["servo_3"] = gouvernail_angle
+
     return (gouvernail_angle, velocity, angle_dest_wind)
     
     
     
 
 while True:
-    data = input()
-    data = json.loads(data)
+    try:
+        data = input()
+        data = json.loads(data)
 
-    target_changed = False
-    # update data value 
-    for field in data_fields:
-        if(field in data):
-            if(field == "target"):
-                target_changed = True
-            data_fields[field] = data[field]
     
-    # do nothing for the first loop the target change 
-    if target_changed: continue
-    # gouvernail_angle = 20
-    # voile_angle = algo1(data_fields["wind_direction"], data_fields["yaw"])
-    # gouvernail_angle = algo2(data_fields["yaw"])
-    # txt = "wind_direction = " + data_fields["wind_direction"] + "  yaw = " + data
-    gouvernail_angle, velocity, angle_dest_wind = algo3()
-    voile_angle = algo1()
+        target_changed = False
+        # update data value 
+        for field in data_fields:
+            if(field in data):
+                if(field == "target"):
+                    target_changed = True
+                data_fields[field] = data[field]
+        
+        # do nothing for the first loop the target change 
+        if target_changed: continue
+        # gouvernail_angle = 20
+        # voile_angle = algo1(data_fields["wind_direction"], data_fields["yaw"])
+        # gouvernail_angle = algo2(data_fields["yaw"])
+        # txt = "wind_direction = " + data_fields["wind_direction"] + "  yaw = " + data
+        
+        gouvernail_angle, velocity, angle_dest_wind = algo3()
+        voile_angle = algo1()
 
-    answer_data = {"servo_1" : voile_angle, "servo_2" : 0, 
+        answer_data = {"servo_1" : voile_angle, "servo_2" : 0, 
                    "servo_3" : gouvernail_angle, "speed" : velocity, "dst_wind" : angle_dest_wind}
-    
+    except Exception as e:
+        answer_data = {"servo_1" : -1, "servo_2" : -1, 
+                   "servo_3" : -1, "speed" : 0, "ERROR" : str(e)}
+
+
     print(json.dumps(answer_data))
     sys.stdout.flush()
+
+    
 
 

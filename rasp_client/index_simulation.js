@@ -81,6 +81,8 @@ function connection_main(){
       }
 
       else if (data["type"] == "target"){
+        console.log("TARGET ------------------- ");
+        console.log(JSON.stringify(data));
         python_navigation.send(JSON.stringify(data));
       }
   });

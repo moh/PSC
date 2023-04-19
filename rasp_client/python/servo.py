@@ -1,6 +1,7 @@
 import pigpio 
 import time
 import json
+import sys
 from servomotor import ServoMotor
 
 # initialise with "sudo pigpiod"
@@ -21,5 +22,5 @@ while True:
 		pass
 	answer_data = {"servo_1" : servo_1.angle, "servo_2" : servo_2.angle, "servo_3" : 0}
 	print(json.dumps(answer_data))
-
+	sys.stdout.flush()
 

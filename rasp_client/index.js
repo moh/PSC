@@ -18,8 +18,9 @@ var associated_PC = null;
 
 // var related to python script
 const python_gps = new PythonShell("python/gps.py");
-const python_servos = new PythonShell("python/servo.py")
-
+const python_servos = new PythonShell("python/servo.py");
+const python_arduino_data = new PythonShell("python/arduino.py");
+const python_navigation = new PythonShell("python/navigation.py");
 
 function connection_main(){
   console.log("trying to connect ...");
@@ -40,16 +41,11 @@ function connection_main(){
   // receive a message from the server
   socket.addEventListener("message", ({ data }) => {
     data = JSON.parse(data);
-    // print data 
-    console.log("data =   ");
-    console.log(data);
+   
     if((data["type"] == "connect") && (data["answer"] == "accepted")){
       connected = true;
       console.log("connected to server");
       
-      //setInterval(send_gps, 500);
-      //setInterval(send_servo, 1000);
-      setInterval(send_wind, 1000);
     }
       if (data["type"] == "PC_presence") {
           if (data["answer"] == true) {
@@ -61,6 +57,25 @@ function connection_main(){
       else if (data["type"] == "command") {
           python_servos.send(JSON.stringify(data["data"]));
           
+      }
+
+      else if (data["type"] == "navigation"){
+        console.log("navigation received ");
+        navigation_enabled = !navigation_enabled;
+
+        // send current navigation state to the client
+        socket.send(JSON.stringify({
+          type: "send_data",
+          data_type: "navigation_status",
+          data: navigation_enabled
+        }));
+
+      }
+
+      else if (data["type"] == "target"){
+        console.log("TARGET ------------------- ");
+        console.log(JSON.stringify(data));
+        python_navigation.send(JSON.stringify(data));
       }
   });
 
@@ -78,7 +93,6 @@ function connection_main(){
 
 
   socket.onerror = function (error){
-    console.log("test");
     connected_to_PC = false;
     if(!connected){
       console.log("error ... ");
@@ -120,38 +134,68 @@ function send_servo(data) {
     
 }
 
-/*
-function send_gps(){
-  var lat = Math.random()*100;
-  var lon = Math.random()*10;
-  if(!connected || !connected_to_PC){return;}
-  socket.send(JSON.stringify({
-    type: "send_data",
-    data_type: "GPS",
-    data : {"alt" : rand_nb(), "lat" : 48.715861, "lon" : 2.211261, "speed" : rand_nb(), "sat" : rand_nb() }
-  }));
+
+/**
+ * send the data from the arduino to PC
+ * @param {*} data 
+ */
+function send_arduino_data(data){
+    console.log("send data from arduino ");
+
+    if (!connected || !connected_to_PC) { return; }
+    
+    socket.send(JSON.stringify({
+        type: "send_data",
+        data_type: "*",
+        data: JSON.parse(data)
+    }));
 }
 
-*/
 
-function send_wind(){
-  if(!connected || !connected_to_PC){return;}
-  socket.send(JSON.stringify({
-    type: "send_data",
-    data_type: "WIND",
-    data : {"wind_direction" : rand_nb(), "wind_speed" : rand_nb()}
-  }));
+/**
+ * data produced by navigation algorithm
+ * @param {*} data data of servos
+ */
+function navigation_command(data){
+  python_servos.send(data);
 }
 
-// a test function 
-function rand_nb(){
-  return Math.floor(Math.random() * 100);
-}
 
-python_gps.send("HII gps");
+//send_gps(data);});
+python_servos.on('message', (data) => {
+  if (connected_to_PC){ 
+    // console.log("Servos"); 
+    send_servo(data); 
+  }
+});
+
+
 // for python output
-python_gps.on('message', (data) => { console.log(data); });
-    //send_gps(data);});
-python_servos.on('message', (data) => { console.log(data); send_servo(data); });
+python_gps.on('message', (data) => {
+  if (connected_to_PC){
+    // console.log("Meteo GPS"); 
+    send_gps(data); 
+  }
+});
+
+
+python_arduino_data.on('message', (data) => {
+  if (connected_to_PC){
+    send_arduino_data(data);
+  }
+});
+
+
+python_navigation.on('message', (data) => {
+  if (connected_to_PC){
+    console.log("navigation : ");
+    console.log(data);
+    // test speed
+    speed = JSON.parse(data)["speed"];
+    //
+    navigation_command(data);
+  }
+});
+
 
 connection_main();
