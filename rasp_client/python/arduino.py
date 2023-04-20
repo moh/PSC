@@ -1,11 +1,22 @@
 import serial
+import serial.tools.list_ports
 import json
 import time
 import sys
 
 port = "/dev/ttyACM0"
 
-data = {"yaw" : None, "pitch" : None, "roll" : None}
+# data = {"yaw" : None, "pitch" : None, "roll" : None}
+
+# Detect which port the arduino is connected to 
+ports = list(serial.tools.list_ports.comports())
+
+for p in ports:
+    p = str(p)
+    if ("GENUINO" in p):
+        # get port name 
+        port = p.split("-")[0]
+        port = port.replace(" ", "")
 
 
 def clear_answer(answer):

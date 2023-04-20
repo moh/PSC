@@ -16,6 +16,10 @@ var connected = false;
 var connected_to_PC = false;
 var associated_PC = null;
 
+// related to navigation algorithm
+var navigation_enabled = false;
+
+
 // var related to python script
 const python_gps = new PythonShell("python/gps.py");
 const python_servos = new PythonShell("python/servo.py");
